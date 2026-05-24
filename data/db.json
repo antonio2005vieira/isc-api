@@ -1,0 +1,45 @@
+{
+  "usuarios": [
+    {
+      "id": 1779563258876,
+      "nome": "Administrador",
+      "login": "admin",
+      "senha": "$2b$10$ZOi1MPt1UCzFtcXDeryql.KwmuKPL56SflNh2S/3CvYS.6WzYNZtK",
+      "criado_em": "2026-05-23T19:07:38.876Z"
+    }
+  ],
+  "rotas": [],
+  "imoveis": [
+    {
+      "id": 1779562944039,
+      "matricula": "432489",
+      "endereco": "Rua Paulo Guilain",
+      "hidrometro": "138",
+      "rota": "60",
+      "visitado": false,
+      "criado_em": "2026-05-23T19:02:24.039Z"
+    },
+    {
+      "id": 1779563936758,
+      "matricula": "1001",
+      "endereco": "Rua Central",
+      "hidrometro": "HID123",
+      "rota": "R1",
+      "visitado": true,
+      "criado_em": "2026-05-23T19:18:56.758Z"
+    }
+  ],
+  "leituras": [
+    {
+      "id": 1779564045613,
+      "imovel_id": 1779563936758,
+      "leitura": "456",
+      "latitude": "-31.765",
+      "longitude": "-52.337",
+      "data": "2026-05-23T19:20:45.613Z"
+    }
+  ],
+  "anormalidades": [],
+  "sincronizacao": [],
+  "fotos": []
+}

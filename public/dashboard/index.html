@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>ISC SANEP - Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      color: #fff;
+    }
+
+    header {
+      padding: 15px;
+      background: #1e293b;
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .title {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .value {
+      font-size: 22px;
+      margin-top: 5px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: collapse;
+    }
+
+    td, th {
+      border: 1px solid #334155;
+      padding: 8px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>ISC SANEP - Painel de Controle</header>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="title">Imóveis</div>
+    <div class="value" id="imoveis">0</div>
+  </div>
+
+  <div class="card">
+    <div class="title">Leituras</div>
+    <div class="value" id="leituras">0</div>
+  </div>
+
+  <div class="card">
+    <div class="title">Usuários</div>
+    <div class="value" id="usuarios">0</div>
+  </div>
+
+</div>
+
+<div class="card" style="margin:10px;">
+  <div class="title">Últimas Leituras</div>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Imóvel</th>
+        <th>Leitura</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="tabela"></tbody>
+  </table>
+</div>
+
+<script>
+async function load() {
+  const db = await fetch("/imoveis").then(r => r.json());
+  const leituras = await fetch("/leituras").then(r => r.json());
+  const usuarios = await fetch("/auth").then(r => r.json()).catch(() => []);
+
+  document.getElementById("imoveis").innerText = db.length;
+  document.getElementById("leituras").innerText = leituras.length;
+  document.getElementById("usuarios").innerText = usuarios.length || 0;
+
+  const tabela = document.getElementById("tabela");
+  tabela.innerHTML = "";
+
+  leituras.slice(-10).forEach(l => {
+    tabela.innerHTML += `
+      <tr>
+        <td>${l.id}</td>
+        <td>${l.imovel_id}</td>
+        <td>${l.leitura}</td>
+        <td>${l.sync_status}</td>
+      </tr>
+    `;
+  });
+}
+
+load();
+setInterval(load, 5000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:background="@color/dark_gray" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TableLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:stretchColumns="1">
+            <TableRow android:background="@color/unselected_grey">
+                <TextView android:textSize="16.0sp" android:textStyle="bold" android:id="@id/imovel" android:layout_marginRight="2.0dip" android:text="@string/str_matricula" />
+                <TextView android:textSize="16.0sp" android:id="@id/imovelText" />
+                <TextView android:textSize="16.0sp" android:textStyle="bold" android:id="@id/date" android:layout_marginRight="2.0dip" android:text="@string/str_data" />
+                <TextView android:textSize="16.0sp" android:id="@id/dateText" />
+            </TableRow>
+        </TableLayout>
+        <LinearLayout android:orientation="vertical" android:id="@id/llAnormalidadeLeitura" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginBottom="10.0dip">
+            <LinearLayout android:orientation="horizontal" android:background="@color/holo_bar" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TextView android:textSize="18.0sp" android:textColor="#ffffffff" android:gravity="center_horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/str_anormalidade_leitura" />
+            </LinearLayout>
+            <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dip">
+                <LinearLayout android:orientation="vertical" android:id="@id/llImovelAnormalidadeLeitura" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+                    <ImageView android:layout_gravity="center" android:id="@id/imgImovelAnormalidadeLeitura" android:layout_width="60.0dip" android:layout_height="60.0dip" android:src="@drawable/camera" />
+                    <TextView android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@id/imovelTitulo" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="2.0dip" android:text="@string/str_imovel" />
+                </LinearLayout>
+                <LinearLayout android:orientation="vertical" android:id="@id/llHidrometroAnormalidadeLeitura" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+                    <ImageView android:layout_gravity="center" android:id="@id/imgAnormalidadeLeitura" android:layout_width="60.0dip" android:layout_height="60.0dip" android:src="@drawable/camera" />
+                    <TextView android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@id/anormalidadeTitulo" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="2.0dip" android:layout_marginTop="2.0dip" android:text="@string/str_anormalidade" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout android:orientation="vertical" android:id="@id/llAnormalidadeConsumo" android:layout_width="fill_parent" android:layout_height="fill_parent">
+            <LinearLayout android:orientation="horizontal" android:background="@color/holo_bar" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TextView android:textSize="18.0sp" android:textColor="#ffffffff" android:gravity="center_horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/str_anormalidade_consumo" />
+            </LinearLayout>
+            <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dip">
+                <LinearLayout android:orientation="vertical" android:id="@id/llImovelAnormalidadeConsumo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+                    <ImageView android:layout_gravity="center" android:id="@id/imgImovelAnormalidadeConsumo" android:layout_width="60.0dip" android:layout_height="60.0dip" android:src="@drawable/camera" />
+                    <TextView android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@id/imovelTituloo" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="2.0dip" android:text="@string/str_imovel" />
+                </LinearLayout>
+                <LinearLayout android:orientation="vertical" android:id="@id/llHidrometroAnormalidadeConsumo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+                    <ImageView android:layout_gravity="center" android:id="@id/imgAnormalidadeConsumo" android:layout_width="60.0dip" android:layout_height="60.0dip" android:src="@drawable/camera" />
+                    <TextView android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@id/anormalidadeTituloo" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="2.0dip" android:layout_marginTop="2.0dip" android:text="@string/str_anormalidade" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

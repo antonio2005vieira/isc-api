@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "versao": "2.0",
+    "sistema": "ISC SANEP",
+    "criado_em": "2026-01-01"
+  },
+  "usuarios": [
+    {
+      "id": "43c3f2d3-cec1-4187-97a0-68d25a3c5492",
+      "nome": "Antonio",
+      "login": "admin",
+      "senha": "$2b$10$anf6i19fCexuUw6hGVIJxel30OU0PihyJ8aY6s3BEv0kPj38bIw6i",
+      "imei": "123456789",
+      "nivel": "admin",
+      "ativo": true,
+      "criado_em": "2026-05-24T03:20:48.202Z",
+      "ultimo_login": "2026-05-24T03:27:50.757Z"
+    }
+  ],
+  "imoveis": [],
+  "leituras": [],
+  "rotas": [],
+  "fotos": [],
+  "sync_queue": [],
+  "sync_log": [],
+  "logs": [
+    {
+      "id": 1779597309856,
+      "action": "REQUEST",
+      "endpoint": "/leituras",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "127.0.0.1",
+      "extra": {},
+      "created_at": "2026-05-24T04:35:09.858Z"
+    },
+    {
+      "id": 1779597309926,
+      "action": "REQUEST",
+      "endpoint": "/auth",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "127.0.0.1",
+      "extra": {},
+      "created_at": "2026-05-24T04:35:09.926Z"
+    },
+    {
+      "id": 1779597310089,
+      "action": "REQUEST",
+      "endpoint": "/favicon.ico",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "127.0.0.1",
+      "extra": {},
+      "created_at": "2026-05-24T04:35:10.089Z"
+    },
+    {
+      "id": 1779597314646,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "127.0.0.1",
+      "extra": {},
+      "created_at": "2026-05-24T04:35:14.646Z"
+    },
+    {
+      "id": 1779597314667,
+      "action": "REQUEST",
+      "endpoint": "/leituras",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "127.0.0.1",
+      "extra": {},
+      "created_at": "2026-05-24T04:35:14.667Z"
+    },
+    {
+      "id": 1779597314686,
+      "action": "REQUEST",
+      "endpoint": "/auth",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "127.0.0.1",
+      "extra": {},
+      "created_at": "2026-05-24T04:35:14.686Z"
+    },
+    {
+      "id": 1779597317878,
+      "action": "REQUEST",
+      "endpoint": "/favicon.ico",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T04:35:17.878Z"
+    }
+  ]
+}

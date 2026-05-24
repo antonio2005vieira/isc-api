@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@drawable/bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="horizontal" android:background="#ffffffff" android:layout_width="fill_parent" android:layout_height="wrap_content" android:minHeight="1280.0dip">
+        <TextView android:textColor="#ffffffff" android:id="@id/endereco" android:background="#ff0f0f0f" android:paddingLeft="25.0dip" android:paddingTop="5.0dip" android:paddingRight="15.0dip" android:paddingBottom="5.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dip">
+        <TextView android:textColor="#ffffffff" android:padding="5.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="15.0dip" android:text="Hidrômetro: " />
+        <TextView android:textStyle="bold" android:textColor="#ffffffff" android:id="@id/hidrometro" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:textColor="#ffffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="6.0dip" android:text="Loc Inst: " />
+        <TextView android:textStyle="bold" android:textColor="#ffffffff" android:id="@id/local" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+    <TextView android:background="#ffbac2ca" android:layout_width="fill_parent" android:layout_height="1.0dip" android:layout_margin="5.0dip" android:layout_marginLeft="15.0dip" />
+    <TextView android:textColor="#ffffffff" android:padding="5.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="15.0dip" android:text="Leitura: " />
+    <EditText android:textColor="#ff000000" android:id="@id/leitura" android:padding="5.0dip" android:layout_width="270.0dip" android:layout_height="wrap_content" android:layout_marginLeft="15.0dip" android:inputType="number" />
+    <TextView android:background="#ffbac2ca" android:layout_width="fill_parent" android:layout_height="1.0dip" android:layout_margin="5.0dip" android:layout_marginLeft="15.0dip" />
+    <TextView android:textColor="#ffffffff" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="20.0dip" android:text="Anormalidade:" />
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="6.0dip">
+        <EditText android:textColor="#ff000000" android:id="@id/idAnormalidade" android:padding="5.0dip" android:layout_width="70.0dip" android:layout_height="wrap_content" android:layout_marginLeft="15.0dip" android:inputType="number" />
+        <Spinner android:id="@id/anormalidade" android:layout_width="225.0dip" android:layout_height="wrap_content" android:layout_marginLeft="6.0dip" android:layout_marginTop="-25.0dip" />
+    </LinearLayout>
+</LinearLayout>

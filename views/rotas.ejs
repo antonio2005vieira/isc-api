@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Rotas</title>
+
+    <style>
+
+        body{
+            background:#111;
+            color:white;
+            font-family:Arial;
+            padding:20px;
+        }
+
+        input, textarea{
+            width:100%;
+            padding:10px;
+            margin-bottom:10px;
+        }
+
+        button{
+            padding:10px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+        }
+
+        .salvar{
+            width:100%;
+            background:green;
+            color:white;
+        }
+
+        .finalizar{
+            background:orange;
+            color:white;
+        }
+
+        .card{
+            background:#222;
+            padding:15px;
+            margin-top:10px;
+            border-radius:10px;
+        }
+
+        .status{
+            padding:5px 10px;
+            border-radius:5px;
+        }
+
+        .pendente{
+            background:red;
+        }
+
+        .finalizada{
+            background:green;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>ROTAS</h1>
+
+    <form method="POST" action="/web/rotas">
+
+        <input
+            type="text"
+            name="nome"
+            placeholder="Nome da rota"
+            required
+        >
+
+        <textarea
+            name="descricao"
+            placeholder="Descrição"
+        ></textarea>
+
+        <button
+            class="salvar"
+            type="submit"
+        >
+            SALVAR
+        </button>
+
+    </form>
+
+    <hr>
+
+    <% rotas.forEach(rota => { %>
+
+        <div class="card">
+
+            <h2>
+                <%= rota.nome %>
+            </h2>
+
+            <p>
+                <%= rota.descricao %>
+            </p>
+
+            <% if(rota.status == 'PENDENTE'){ %>
+
+                <span class="status pendente">
+                    PENDENTE
+                </span>
+
+            <% } else { %>
+
+                <span class="status finalizada">
+                    FINALIZADA
+                </span>
+
+            <% } %>
+
+            <br><br>
+
+            <% if(rota.status == 'PENDENTE'){ %>
+
+                <a
+                    href="/web/rotas/finalizar/<%= rota.id %>"
+                >
+
+                    <button class="finalizar">
+                        FINALIZAR
+                    </button>
+
+                </a>
+
+            <% } %>
+
+        </div>
+
+    <% }) %>
+
+</body>
+
+</html>

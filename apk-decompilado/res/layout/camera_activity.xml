@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:id="@id/picScreen" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.br.ipad.isc.gui.CustomDrawableView android:id="@id/preview" android:background="@android:color/transparent" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    <LinearLayout android:gravity="right" android:layout_gravity="right" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0dip" android:layout_marginRight="6.0dip">
+        <Button android:gravity="right" android:layout_gravity="right" android:id="@id/btTirarFoto" android:background="@drawable/camerabt" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentTop="true" />
+    </LinearLayout>
+</RelativeLayout>

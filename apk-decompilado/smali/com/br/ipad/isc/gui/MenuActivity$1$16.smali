@@ -1,0 +1,105 @@
+.class Lcom/br/ipad/isc/gui/MenuActivity$1$16;
+.super Ljava/lang/Object;
+.source "MenuActivity.java"
+
+# interfaces
+.implements Landroid/content/DialogInterface$OnClickListener;
+
+
+# annotations
+.annotation system Ldalvik/annotation/EnclosingMethod;
+    value = Lcom/br/ipad/isc/gui/MenuActivity$1;->onItemClick(Landroid/widget/AdapterView;Landroid/view/View;IJ)V
+.end annotation
+
+.annotation system Ldalvik/annotation/InnerClass;
+    accessFlags = 0x0
+    name = null
+.end annotation
+
+
+# instance fields
+.field final synthetic this$1:Lcom/br/ipad/isc/gui/MenuActivity$1;
+
+.field final synthetic val$posicaoLista:I
+
+
+# direct methods
+.method constructor <init>(Lcom/br/ipad/isc/gui/MenuActivity$1;I)V
+    .locals 0
+
+    .line 410
+    iput-object p1, p0, Lcom/br/ipad/isc/gui/MenuActivity$1$16;->this$1:Lcom/br/ipad/isc/gui/MenuActivity$1;
+
+    iput p2, p0, Lcom/br/ipad/isc/gui/MenuActivity$1$16;->val$posicaoLista:I
+
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+
+    return-void
+.end method
+
+
+# virtual methods
+.method public onClick(Landroid/content/DialogInterface;I)V
+    .locals 2
+
+    .line 412
+    invoke-static {}, Lcom/br/ipad/isc/bean/SistemaParametros;->getInstancia()Lcom/br/ipad/isc/bean/SistemaParametros;
+
+    move-result-object p1
+
+    const/4 p2, 0x2
+
+    .line 413
+    invoke-static {p2}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+
+    move-result-object p2
+
+    invoke-virtual {p1, p2}, Lcom/br/ipad/isc/bean/SistemaParametros;->setIndicadorModeloImpressora(Ljava/lang/Integer;)V
+
+    .line 414
+    iget-object p2, p0, Lcom/br/ipad/isc/gui/MenuActivity$1$16;->this$1:Lcom/br/ipad/isc/gui/MenuActivity$1;
+
+    iget-object p2, p2, Lcom/br/ipad/isc/gui/MenuActivity$1;->this$0:Lcom/br/ipad/isc/gui/MenuActivity;
+
+    invoke-static {p2}, Lcom/br/ipad/isc/gui/MenuActivity;->access$200(Lcom/br/ipad/isc/gui/MenuActivity;)Lcom/br/ipad/isc/fachada/Fachada;
+
+    move-result-object p2
+
+    invoke-virtual {p2, p1}, Lcom/br/ipad/isc/fachada/Fachada;->atualizar(Lcom/br/ipad/isc/bean/ObjetoBasico;)V
+
+    .line 415
+    iget-object p1, p0, Lcom/br/ipad/isc/gui/MenuActivity$1$16;->this$1:Lcom/br/ipad/isc/gui/MenuActivity$1;
+
+    iget-object p1, p1, Lcom/br/ipad/isc/gui/MenuActivity$1;->this$0:Lcom/br/ipad/isc/gui/MenuActivity;
+
+    invoke-static {p1}, Lcom/br/ipad/isc/gui/MenuActivity;->access$300(Lcom/br/ipad/isc/gui/MenuActivity;)Landroid/widget/ListView;
+
+    move-result-object p1
+
+    iget p2, p0, Lcom/br/ipad/isc/gui/MenuActivity$1$16;->val$posicaoLista:I
+
+    invoke-virtual {p1, p2}, Landroid/widget/ListView;->setSelection(I)V
+
+    .line 416
+    iget-object p1, p0, Lcom/br/ipad/isc/gui/MenuActivity$1$16;->this$1:Lcom/br/ipad/isc/gui/MenuActivity$1;
+
+    iget-object p1, p1, Lcom/br/ipad/isc/gui/MenuActivity$1;->this$0:Lcom/br/ipad/isc/gui/MenuActivity;
+
+    iget-object p2, p0, Lcom/br/ipad/isc/gui/MenuActivity$1$16;->this$1:Lcom/br/ipad/isc/gui/MenuActivity$1;
+
+    iget-object p2, p2, Lcom/br/ipad/isc/gui/MenuActivity$1;->this$0:Lcom/br/ipad/isc/gui/MenuActivity;
+
+    const v0, 0x7f0b0128
+
+    invoke-virtual {p2, v0}, Lcom/br/ipad/isc/gui/MenuActivity;->getString(I)Ljava/lang/String;
+
+    move-result-object p2
+
+    iget v0, p0, Lcom/br/ipad/isc/gui/MenuActivity$1$16;->val$posicaoLista:I
+
+    const-string v1, ""
+
+    invoke-static {p1, p2, v1, v0}, Lcom/br/ipad/isc/gui/MenuActivity;->access$400(Lcom/br/ipad/isc/gui/MenuActivity;Ljava/lang/String;Ljava/lang/String;I)V
+
+    return-void
+.end method

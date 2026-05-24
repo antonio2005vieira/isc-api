@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@drawable/fundotela" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="horizontal" android:background="@drawable/fundopreto_bg" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginBottom="10.0dip">
+        <ImageView android:gravity="right" android:id="@id/ic_offline" android:padding="6.0px" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:src="@drawable/arquivooffline" />
+        <TextView android:textSize="18.0dip" android:textColor="#ffffffff" android:gravity="center" android:padding="6.0px" android:layout_width="330.0dip" android:layout_height="fill_parent" android:text="@string/str_selecionar_arquivo_title" />
+        <ImageView android:gravity="center" android:id="@id/ic_banco" android:padding="6.0px" android:layout_width="30.0dip" android:layout_height="30.0dip" android:layout_marginRight="8.0dip" android:src="@drawable/restaurar_banco" />
+    </LinearLayout>
+    <ListView android:id="@id/listFiles" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+</LinearLayout>

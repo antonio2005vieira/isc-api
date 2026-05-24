@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@drawable/fundotela" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:id="@id/textViewProgress" android:paddingLeft="5.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="7.0dip" android:text="@string/str_download_progress_titulo" />
+    <ProgressBar android:id="@id/progressPorLinha" android:layout_width="fill_parent" android:layout_height="40.0px" android:layout_marginLeft="6.0dip" android:layout_marginTop="8.0px" android:layout_marginRight="6.0dip" android:max="100" style="?android:progressBarStyleHorizontal" />
+    <LinearLayout android:gravity="right" android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="10.0px">
+        <Button android:layout_gravity="center_vertical" android:id="@id/btnCancelDA" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="80.0dip" android:text="@string/str_geral_bt_cancela" />
+        <Button android:layout_gravity="center_vertical" android:id="@id/btnSair" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="6.0dip" android:minWidth="80.0dip" android:text="@string/str_sair_carregamento" />
+    </LinearLayout>
+</LinearLayout>

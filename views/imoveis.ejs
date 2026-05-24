@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>ISC SANEP</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#111;
+            color:#fff;
+            padding:20px;
+        }
+
+        input{
+            width:100%;
+            padding:10px;
+            margin-bottom:10px;
+            border:none;
+            border-radius:5px;
+        }
+
+        button{
+            padding:10px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+        }
+
+        .salvar{
+            width:100%;
+            background:green;
+            color:white;
+        }
+
+        .editar{
+            background:orange;
+            color:white;
+        }
+
+        .excluir{
+            background:red;
+            color:white;
+        }
+
+        .card{
+            background:#222;
+            padding:15px;
+            margin-top:10px;
+            border-radius:10px;
+        }
+
+        .status{
+            padding:5px 10px;
+            border-radius:5px;
+            display:inline-block;
+        }
+
+        .visitado{
+            background:green;
+        }
+
+        .pendente{
+            background:red;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>ISC SANEP - IMÓVEIS</h1>
+
+    <form method="POST" action="/web/imoveis">
+
+        <input
+            type="text"
+            name="matricula"
+            placeholder="Matrícula"
+            required
+        >
+
+        <input
+            type="text"
+            name="endereco"
+            placeholder="Endereço"
+            required
+        >
+
+        <input
+            type="text"
+            name="hidrometro"
+            placeholder="Hidrômetro"
+            required
+        >
+
+        <input
+            type="text"
+            name="rota"
+            placeholder="Rota"
+            required
+        >
+
+        <button
+            class="salvar"
+            type="submit"
+        >
+            SALVAR
+        </button>
+
+    </form>
+
+    <hr>
+
+    <% imoveis.forEach(imovel => { %>
+
+        <div class="card">
+
+            <h3>
+                <%= imovel.matricula %>
+            </h3>
+
+            <p>
+                <%= imovel.endereco %>
+            </p>
+
+            <p>
+                Hidrômetro:
+                <%= imovel.hidrometro %>
+            </p>
+
+            <p>
+                Rota:
+                <%= imovel.rota %>
+            </p>
+
+            <% if(imovel.visitado){ %>
+
+                <span class="status visitado">
+                    VISITADO
+                </span>
+
+            <% } else { %>
+
+                <span class="status pendente">
+                    PENDENTE
+                </span>
+
+            <% } %>
+
+            <br><br>
+
+            <a href="/web/imoveis/editar/<%= imovel.id %>">
+
+                <button class="editar">
+                    EDITAR
+                </button>
+
+            </a>
+
+            <a href="/web/imoveis/excluir/<%= imovel.id %>">
+
+                <button class="excluir">
+                    EXCLUIR
+                </button>
+
+            </a>
+
+        </div>
+
+    <% }) %>
+
+</body>
+
+</html>

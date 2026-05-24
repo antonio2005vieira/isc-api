@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:background="@drawable/fundocinza_bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="horizontal" android:background="@drawable/fundopreto_bg" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <ImageView android:gravity="right" android:padding="6.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="10.0dip" android:src="@drawable/chart_bar" />
+        <TextView android:textSize="18.0sp" android:textColor="#ffffffff" android:gravity="left" android:padding="6.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/str_menu_relatorio" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:paddingLeft="6.0dip" android:paddingTop="6.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/str_total_imoveis" />
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:id="@id/totalImoveis" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:paddingLeft="6.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/str_total_imoveis_visitados" />
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:id="@id/totalImoveisVisitados" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:paddingLeft="12.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/str_total_imoveis_a_visitar" />
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:id="@id/totalImoveisAVisitar" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:paddingLeft="6.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:id="@id/percentualImoveisVisitados" android:visibility="visible" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:background="@drawable/borders" android:layout_width="fill_parent" android:layout_height="30.0dip" android:layout_marginLeft="8.0dip" android:layout_marginRight="10.0dip" android:layout_marginBottom="2.0dip">
+        <LinearLayout android:orientation="horizontal" android:id="@id/concluido" android:background="#ffadff2f" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginLeft="1.0dip" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:layout_weight="0.6" />
+        <LinearLayout android:orientation="horizontal" android:id="@id/nao_concluido" android:background="@drawable/fundocinza_bg" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginTop="1.0dip" android:layout_marginRight="1.0dip" android:layout_marginBottom="1.0dip" android:layout_weight="0.4" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="2.0dip">
+        <View android:background="#ff8f8f8f" android:layout_width="fill_parent" android:layout_height="1.1999817dip" android:layout_marginLeft="6.0dip" android:layout_marginRight="6.0dip" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:paddingLeft="6.0dip" android:paddingTop="7.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/str_total_com_anormalidade" />
+        <TextView android:textSize="15.0sp" android:textStyle="bold" android:textColor="#ff000000" android:id="@id/totalImoveisVisitadosComAnormalidade" android:paddingLeft="3.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:paddingLeft="6.0dip" android:paddingTop="7.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/str_total_ja_visitado" />
+        <TextView android:textStyle="bold" android:textColor="#ff000000" android:id="@id/percentualVisitadosComAnormalidade" android:background="@drawable/tab_anormalidade_bg" android:padding="6.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="3.0dip" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="2.0dip">
+        <View android:background="#ff8f8f8f" android:layout_width="fill_parent" android:layout_height="1.3999939dip" android:layout_marginLeft="6.0dip" android:layout_marginRight="6.0dip" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:paddingLeft="6.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/str_total_sem_anormalidade" />
+        <TextView android:textSize="12.0sp" android:textColor="#ff000000" android:id="@id/totalImoveisVisitadosSemAnormalidade" android:paddingLeft="3.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:padding="6.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="15.0sp" android:textColor="#ff000000" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/str_total_ja_visitado" />
+        <TextView android:textStyle="bold" android:textColor="#ff000000" android:id="@id/percentualVisitadosSemAnormalidade" android:background="@drawable/tab_anormalidade_bg" android:padding="6.0dip" android:visibility="visible" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="3.0dip" />
+    </LinearLayout>
+    <LinearLayout android:gravity="center" android:orientation="horizontal" android:background="@drawable/fundopreto_bg" android:padding="3.0dip" android:paddingLeft="20.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="8.0dip">
+        <Button android:gravity="center" android:layout_gravity="center" android:id="@id/btRelatorioPorQuadra" android:layout_width="wrap_content" android:layout_height="45.0dip" android:text="@string/str_relatorio_resumo_quadra" />
+    </LinearLayout>
+</LinearLayout>

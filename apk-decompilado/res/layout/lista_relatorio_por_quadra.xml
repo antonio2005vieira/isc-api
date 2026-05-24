@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@drawable/fundotela" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="horizontal" android:background="@drawable/fundopreto_bg" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <ImageView android:gravity="right" android:padding="6.0px" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="10.0dip" android:src="@drawable/quadra_icon" />
+        <TextView android:textSize="18.0sp" android:textColor="#ffffffff" android:gravity="left" android:padding="6.0px" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/str_relatorio_resumo_quadra" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_margin="10.0px">
+        <ListView android:id="@id/listRelatorioPorQuadra" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    </LinearLayout>
+</LinearLayout>
