@@ -1,68 +1,225 @@
 const express = require("express");
-const cors = require("cors");
-const http = require("http");
-const { Server } = require("socket.io");
 
-const { fixDB } = require("./utils/dbFix");
+const cors = require("cors");
+
+const fs = require("fs");
+
+const path = require("path");
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "*" }
-});
 
 const PORT = 3000;
 
-// ================= AUTO FIX DB =================
-fixDB();
-
 // ================= MIDDLEWARE =================
 app.use(cors());
+
 app.use(express.json());
 
-// ================= STATIC =================
-app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
+app.use(express.urlencoded({
+  extended: true
+}));
 
-// ================= AUDITORIA =================
-const { audit } = require("./middlewares/audit");
+// ================= PASTAS =================
+if (!fs.existsSync("uploads")) {
 
-app.use((req, res, next) => {
-  audit("REQUEST", req);
-  next();
-});
+  fs.mkdirSync("uploads");
 
-// ================= SOCKET =================
-io.on("connection", (socket) => {
-  console.log("🔵 CLIENT CONNECTED");
+}
 
-  socket.on("join", (data) => {
-    socket.join(data.user || "guest");
-  });
+if (!fs.existsSync("database")) {
 
-  socket.on("gps_update", (data) => {
-    io.emit("gps_broadcast", data);
-  });
-});
+  fs.mkdirSync("database");
+
+}
+
+if (!fs.existsSync("public")) {
+
+  fs.mkdirSync("public");
+
+}
+
+// ================= ARQUIVOS ESTÁTICOS =================
+app.use(
+  "/uploads",
+  express.static(
+    path.join(__dirname, "uploads")
+  )
+);
+
+app.use(
+  express.static(
+    path.join(__dirname, "public")
+  )
+);
 
 // ================= ROTAS =================
-app.use("/auth", require("./routes/auth"));
-app.use("/imoveis", require("./routes/imoveis"));
-app.use("/leituras", require("./routes/leituras"));
-app.use("/sync", require("./routes/sync"));
-app.use("/rotas", require("./routes/rotas"));
-app.use("/relatorios", require("./routes/relatorios"));
+app.use(
+  "/auth",
+  require("./routes/auth")
+);
 
-// ================= ROTA TESTE =================
+app.use(
+  "/imoveis",
+  require("./routes/imoveis")
+);
+
+app.use(
+  "/leituras",
+  require("./routes/leituras")
+);
+
+app.use(
+  "/sync",
+  require("./routes/sync")
+);
+
+app.use(
+  "/rotas",
+  require("./routes/rotas")
+);
+
+app.use(
+  "/dashboard",
+  require("./routes/dashboard")
+);
+
+app.use(
+  "/relatorios",
+  require("./routes/relatorios")
+);
+
+// ================= STATUS =================
 app.get("/", (req, res) => {
+
   res.json({
+
     status: "online",
+
     sistema: "ISC SANEP",
-    tempo_real: true
+
+    servidor: "rodando",
+
+    versao: "2.0",
+
+    data:
+      new Date().toISOString()
+
   });
+
+});
+
+// ================= HEALTH =================
+app.get("/health", (req, res) => {
+
+  res.json({
+
+    status: "ok",
+
+    uptime:
+      process.uptime(),
+
+    memoria:
+      process.memoryUsage(),
+
+    plataforma:
+      process.platform,
+
+    node:
+      process.version
+
+  });
+
+});
+
+// ================= INFO SISTEMA =================
+app.get("/info", (req, res) => {
+
+  res.json({
+
+    sistema:
+      "ISC SANEP",
+
+    backend:
+      "Node.js + Express",
+
+    versao:
+      "2.0",
+
+    recursos: [
+
+      "JWT",
+      "Offline",
+      "GPS",
+      "Camera",
+      "Upload",
+      "Dashboard",
+      "Relatorios",
+      "Mapa",
+      "Sincronizacao"
+
+    ]
+
+  });
+
+});
+
+// ================= 404 =================
+app.use((req, res) => {
+
+  res.status(404).json({
+
+    status: false,
+
+    erro:
+      "Rota não encontrada"
+
+  });
+
 });
 
 // ================= START =================
-server.listen(PORT, "0.0.0.0", () => {
-  console.log("✔ SERVIDOR RODANDO NA PORTA " + PORT);
-});
+app.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+
+    console.log("");
+
+    console.log(
+      "===================================="
+    );
+
+    console.log(
+      "✔ ISC SANEP ONLINE"
+    );
+
+    console.log(
+      "✔ PORTA: " + PORT
+    );
+
+    console.log(
+      "✔ LOCAL: http://localhost:" + PORT
+    );
+
+    console.log(
+      "✔ REDE: http://192.168.3.7:" + PORT
+    );
+
+    console.log(
+      "✔ HEALTH: /health"
+    );
+
+    console.log(
+      "✔ DASHBOARD: /dashboard"
+    );
+
+    console.log(
+      "✔ RELATORIOS: /relatorios"
+    );
+
+    console.log(
+      "===================================="
+    );
+
+  }
+);

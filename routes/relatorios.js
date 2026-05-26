@@ -1,80 +1,222 @@
 const express = require("express");
+
 const router = express.Router();
+
 const fs = require("fs");
 
-const DB_PATH = "./database/db.json";
+const { Parser } =
+  require("json2csv");
+
+const DB_PATH =
+  "./database/db.json";
 
 // ================= DB =================
 function readDB() {
-  return JSON.parse(fs.readFileSync(DB_PATH));
-}
 
-// ================= RELATÓRIO GERAL =================
-router.get("/geral", (req, res) => {
-  const db = readDB();
-
-  const totalImoveis = db.imoveis.length;
-  const totalLeituras = db.leituras.length;
-  const totalUsuarios = db.usuarios.length;
-
-  const visitados = db.imoveis.filter(i => i.visitado).length;
-  const pendentes = totalImoveis - visitados;
-
-  res.json({
-    totalImoveis,
-    totalLeituras,
-    totalUsuarios,
-    visitados,
-    pendentes
-  });
-});
-
-// ================= RELATÓRIO POR ROTA =================
-router.get("/rota/:rota", (req, res) => {
-  const db = readDB();
-
-  const imoveis = db.imoveis.filter(i => i.rota == req.params.rota);
-  const leituras = db.leituras.filter(l =>
-    imoveis.find(i => i.id == l.imovel_id)
+  return JSON.parse(
+    fs.readFileSync(DB_PATH)
   );
 
-  res.json({
-    rota: req.params.rota,
-    imoveis: imoveis.length,
-    leituras: leituras.length
-  });
-});
+}
 
-// ================= EXPORT CSV =================
-router.get("/export/csv", (req, res) => {
-  const db = readDB();
+// ================= RELATÓRIO JSON =================
+router.get(
+  "/json",
+  (req, res) => {
 
-  let csv = "id,imovel_id,leitura,latitude,longitude,status,data\n";
+    try {
 
-  db.leituras.forEach(l => {
-    csv += `${l.id},${l.imovel_id},${l.leitura},${l.latitude},${l.longitude},${l.sync_status},${l.created_at}\n`;
-  });
+      const db = readDB();
 
-  res.header("Content-Type", "text/csv");
-  res.attachment("leituras.csv");
-  res.send(csv);
-});
+      res.json({
 
-// ================= DETECÇÃO SIMPLES DE ERROS =================
-router.get("/analise", (req, res) => {
-  const db = readDB();
+        status: true,
 
-  const foraGPS = db.leituras.filter(l => l.statusGPS === "invalid_location").length;
-  const semGPS = db.leituras.filter(l => !l.latitude || !l.longitude).length;
+        exportado_em:
+          new Date().toISOString(),
 
-  const duplicados = db.leituras.length - new Set(db.leituras.map(l => l.id)).size;
+        dados: db
 
-  res.json({
-    totalLeituras: db.leituras.length,
-    foraGPS,
-    semGPS,
-    duplicados
-  });
-});
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro exportação JSON"
+
+      });
+
+    }
+
+  }
+);
+
+// ================= CSV LEITURAS =================
+router.get(
+  "/leituras/csv",
+  (req, res) => {
+
+    try {
+
+      const db = readDB();
+
+      const parser =
+        new Parser();
+
+      const csv =
+        parser.parse(
+          db.leituras
+        );
+
+      res.header(
+        "Content-Type",
+        "text/csv"
+      );
+
+      res.attachment(
+        "leituras.csv"
+      );
+
+      return res.send(csv);
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro CSV leituras"
+
+      });
+
+    }
+
+  }
+);
+
+// ================= CSV USUÁRIOS =================
+router.get(
+  "/usuarios/csv",
+  (req, res) => {
+
+    try {
+
+      const db = readDB();
+
+      const usuarios =
+        db.usuarios.map(u => ({
+
+          id: u.id,
+
+          nome: u.nome,
+
+          login: u.login,
+
+          nivel: u.nivel,
+
+          ativo: u.ativo,
+
+          ultimo_login:
+            u.ultimo_login
+
+        }));
+
+      const parser =
+        new Parser();
+
+      const csv =
+        parser.parse(
+          usuarios
+        );
+
+      res.header(
+        "Content-Type",
+        "text/csv"
+      );
+
+      res.attachment(
+        "usuarios.csv"
+      );
+
+      return res.send(csv);
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro CSV usuários"
+
+      });
+
+    }
+
+  }
+);
+
+// ================= RESUMO =================
+router.get(
+  "/resumo",
+  (req, res) => {
+
+    try {
+
+      const db = readDB();
+
+      res.json({
+
+        status: true,
+
+        resumo: {
+
+          usuarios:
+            db.usuarios.length,
+
+          imoveis:
+            db.imoveis.length,
+
+          leituras:
+            db.leituras.length,
+
+          rotas:
+            db.rotas.length,
+
+          fotos:
+            db.fotos.length
+
+        }
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro resumo"
+
+      });
+
+    }
+
+  }
+);
 
 module.exports = router;

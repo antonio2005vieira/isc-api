@@ -15,9 +15,48 @@
       "ativo": true,
       "criado_em": "2026-05-24T03:20:48.202Z",
       "ultimo_login": "2026-05-24T03:27:50.757Z"
+    },
+    {
+      "id": "1779736396602",
+      "nome": "Joao",
+      "login": "joao",
+      "senha": "$2b$10$d.49/NU01OIOhEazZ8x7ROCFypSHINkjrhLALhYhfENVcM.CKRfDO",
+      "nivel": "leiturista",
+      "ativo": true,
+      "created_at": "2026-05-25T19:13:16.602Z",
+      "ultimo_login": null
     }
   ],
-  "imoveis": [],
+  "imoveis": [
+    {
+      "id": 1779614448350,
+      "matricula": "1001",
+      "endereco": "Rua Central 123",
+      "hidrometro": "H001",
+      "rota": "R1",
+      "latitude": null,
+      "longitude": null,
+      "visitado": false,
+      "sync_status": "pending",
+      "version": 1,
+      "created_at": "2026-05-24T09:20:48.350Z",
+      "updated_at": null
+    },
+    {
+      "id": 1779614459698,
+      "matricula": "1002",
+      "endereco": "Rua Norte 456",
+      "hidrometro": "H002",
+      "rota": "R1",
+      "latitude": null,
+      "longitude": null,
+      "visitado": false,
+      "sync_status": "pending",
+      "version": 1,
+      "created_at": "2026-05-24T09:20:59.698Z",
+      "updated_at": null
+    }
+  ],
   "leituras": [],
   "rotas": [],
   "fotos": [],
@@ -114,6 +153,403 @@
       "ip": "192.168.3.7",
       "extra": {},
       "created_at": "2026-05-24T04:35:17.878Z"
+    },
+    {
+      "id": 1779614307118,
+      "action": "REQUEST",
+      "endpoint": "/favicon.ico",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:27.121Z"
+    },
+    {
+      "id": 1779614309089,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:29.089Z"
+    },
+    {
+      "id": 1779614311286,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:31.287Z"
+    },
+    {
+      "id": 1779614311982,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:31.983Z"
+    },
+    {
+      "id": 1779614312360,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:32.360Z"
+    },
+    {
+      "id": 1779614315697,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:35.697Z"
+    },
+    {
+      "id": 1779614316141,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:36.141Z"
+    },
+    {
+      "id": 1779614316373,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:36.373Z"
+    },
+    {
+      "id": 1779614316571,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:36.571Z"
+    },
+    {
+      "id": 1779614316783,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:36.783Z"
+    },
+    {
+      "id": 1779614317002,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:37.002Z"
+    },
+    {
+      "id": 1779614317202,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:37.202Z"
+    },
+    {
+      "id": 1779614317413,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:37.413Z"
+    },
+    {
+      "id": 1779614317622,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:18:37.622Z"
+    },
+    {
+      "id": 1779614406124,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:20:06.124Z"
+    },
+    {
+      "id": 1779614448347,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "POST",
+      "body": {
+        "matricula": "1001",
+        "endereco": "Rua Central 123",
+        "hidrometro": "H001",
+        "rota": "R1"
+      },
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:20:48.347Z"
+    },
+    {
+      "id": 1779614459695,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "POST",
+      "body": {
+        "matricula": "1002",
+        "endereco": "Rua Norte 456",
+        "hidrometro": "H002",
+        "rota": "R1"
+      },
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:20:59.695Z"
+    },
+    {
+      "id": 1779614473471,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:21:13.472Z"
+    },
+    {
+      "id": 1779614517762,
+      "action": "REQUEST",
+      "endpoint": "/favicon.ico",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:21:57.763Z"
+    },
+    {
+      "id": 1779614521912,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:22:01.912Z"
+    },
+    {
+      "id": 1779614546110,
+      "action": "REQUEST",
+      "endpoint": "/sync",
+      "method": "POST",
+      "body": [
+        {
+          "client_id": "1779614532728_0.7187473378838667",
+          "tipo": "leitura",
+          "payload": {
+            "imovel_id": 1779614448350,
+            "leitura": "98",
+            "latitude": null,
+            "longitude": null
+          }
+        },
+        {
+          "client_id": "1779614542492_0.6757145937579989",
+          "tipo": "leitura",
+          "payload": {
+            "imovel_id": 1779614459698,
+            "leitura": "568790",
+            "latitude": null,
+            "longitude": null
+          }
+        }
+      ],
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:22:26.110Z"
+    },
+    {
+      "id": 1779614695114,
+      "action": "REQUEST",
+      "endpoint": "/favicon.ico",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:24:55.114Z"
+    },
+    {
+      "id": 1779614699796,
+      "action": "REQUEST",
+      "endpoint": "/imoveis",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:24:59.796Z"
+    },
+    {
+      "id": 1779614721200,
+      "action": "REQUEST",
+      "endpoint": "/sync",
+      "method": "POST",
+      "body": [
+        {
+          "client_id": "1779614532728_0.7187473378838667",
+          "tipo": "leitura",
+          "payload": {
+            "imovel_id": 1779614448350,
+            "leitura": "98",
+            "latitude": null,
+            "longitude": null
+          }
+        },
+        {
+          "client_id": "1779614542492_0.6757145937579989",
+          "tipo": "leitura",
+          "payload": {
+            "imovel_id": 1779614459698,
+            "leitura": "568790",
+            "latitude": null,
+            "longitude": null
+          }
+        },
+        {
+          "client_id": "1779614709482_0.556620996813547",
+          "tipo": "leitura",
+          "payload": {
+            "imovel_id": 1779614448350,
+            "leitura": "7546",
+            "latitude": null,
+            "longitude": null
+          }
+        },
+        {
+          "client_id": "1779614719010_0.2542771616715127",
+          "tipo": "leitura",
+          "payload": {
+            "imovel_id": 1779614459698,
+            "leitura": "145646",
+            "latitude": null,
+            "longitude": null
+          }
+        }
+      ],
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T09:25:21.200Z"
+    },
+    {
+      "id": 1779625305089,
+      "action": "REQUEST",
+      "endpoint": "/favicon.ico",
+      "method": "GET",
+      "body": null,
+      "params": {},
+      "query": {},
+      "imei": null,
+      "ip": "192.168.3.7",
+      "extra": {},
+      "created_at": "2026-05-24T12:21:45.090Z"
     }
   ]
 }

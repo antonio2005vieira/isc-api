@@ -1,370 +1,375 @@
 const express = require("express");
+
 const router = express.Router();
 
 const fs = require("fs");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const { v4: uuidv4 } = require("uuid");
 
-const auth = require("../middleware/auth");
+const bcrypt = require("bcryptjs");
+
+const jwt = require("jsonwebtoken");
 
 const DB_PATH = "./database/db.json";
 
-const SECRET = "isc_secret_key";
+const SECRET =
+  "ISC_SECRET_2026";
 
-// ================= DATABASE =================
-
+// ================= DB =================
 function readDB() {
-  return JSON.parse(fs.readFileSync(DB_PATH));
-}
 
-function saveDB(data) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
-}
-
-// ================= TOKEN =================
-
-function gerarToken(usuario) {
-
-  return jwt.sign(
-    {
-      id: usuario.id,
-      login: usuario.login,
-      nome: usuario.nome,
-      imei: usuario.imei,
-      nivel: usuario.nivel
-    },
-    SECRET,
-    {
-      expiresIn: "7d"
-    }
+  return JSON.parse(
+    fs.readFileSync(DB_PATH)
   );
 
 }
 
-// ================= REGISTER =================
+function saveDB(data) {
 
-router.post("/register", async (req, res) => {
+  fs.writeFileSync(
+    DB_PATH,
+    JSON.stringify(data, null, 2)
+  );
 
-  try {
-
-    const db = readDB();
-
-    const {
-      nome,
-      login,
-      senha,
-      imei,
-      nivel
-    } = req.body;
-
-    if (!nome || !login || !senha || !imei) {
-
-      return res.status(400).json({
-        error: "Dados obrigatórios"
-      });
-
-    }
-
-    const usuarioExiste = db.usuarios.find(
-      u => u.login === login
-    );
-
-    if (usuarioExiste) {
-
-      return res.status(400).json({
-        error: "Usuário já existe"
-      });
-
-    }
-
-    const senhaHash = await bcrypt.hash(senha, 10);
-
-    const usuario = {
-      id: uuidv4(),
-      nome,
-      login,
-      senha: senhaHash,
-      imei,
-      nivel: nivel || "leiturista",
-      ativo: true,
-      criado_em: new Date().toISOString(),
-      ultimo_login: null
-    };
-
-    db.usuarios.push(usuario);
-
-    saveDB(db);
-
-    res.json({
-      status: true,
-      usuario: {
-        id: usuario.id,
-        nome: usuario.nome,
-        login: usuario.login,
-        imei: usuario.imei,
-        nivel: usuario.nivel,
-        ativo: usuario.ativo
-      }
-    });
-
-  } catch (err) {
-
-    res.status(500).json({
-      error: err.message
-    });
-
-  }
-
-});
+}
 
 // ================= LOGIN =================
+router.post(
+  "/login",
+  async (req, res) => {
 
-router.post("/login", async (req, res) => {
+    try {
 
-  try {
+      const {
+        login,
+        senha,
+        imei
+      } = req.body;
 
-    const db = readDB();
+      const db = readDB();
 
-    const {
-      login,
-      senha,
-      imei
-    } = req.body;
+      const usuario =
+        db.usuarios.find(
 
-    if (!login || !senha || !imei) {
+          u =>
+            u.login === login
 
-      return res.status(400).json({
-        error: "Login, senha e IMEI obrigatórios"
-      });
+        );
 
-    }
+      if (!usuario) {
 
-    const usuario = db.usuarios.find(
-      u => u.login === login
-    );
+        return res.status(401).json({
 
-    if (!usuario) {
+          status: false,
 
-      return res.status(404).json({
-        error: "Usuário não encontrado"
-      });
+          erro:
+            "Usuário não encontrado"
 
-    }
+        });
 
-    if (!usuario.ativo) {
-
-      return res.status(403).json({
-        error: "Usuário bloqueado"
-      });
-
-    }
-
-    const senhaOk = await bcrypt.compare(
-      senha,
-      usuario.senha
-    );
-
-    if (!senhaOk) {
-
-      return res.status(401).json({
-        error: "Senha inválida"
-      });
-
-    }
-
-    if (usuario.imei !== imei) {
-
-      return res.status(403).json({
-        error: "IMEI não autorizado"
-      });
-
-    }
-
-    usuario.ultimo_login = new Date().toISOString();
-
-    saveDB(db);
-
-    const token = gerarToken(usuario);
-
-    res.json({
-      status: true,
-      token,
-      usuario: {
-        id: usuario.id,
-        nome: usuario.nome,
-        login: usuario.login,
-        imei: usuario.imei,
-        nivel: usuario.nivel,
-        ativo: usuario.ativo
       }
-    });
 
-  } catch (err) {
+      const senhaValida =
+        await bcrypt.compare(
+          senha,
+          usuario.senha
+        );
 
-    res.status(500).json({
-      error: err.message
-    });
+      if (!senhaValida) {
+
+        return res.status(401).json({
+
+          status: false,
+
+          erro:
+            "Senha inválida"
+
+        });
+
+      }
+
+      if (!usuario.ativo) {
+
+        return res.status(403).json({
+
+          status: false,
+
+          erro:
+            "Usuário desativado"
+
+        });
+
+      }
+
+      usuario.imei =
+        imei || null;
+
+      usuario.ultimo_login =
+        new Date().toISOString();
+
+      saveDB(db);
+
+      const token =
+        jwt.sign(
+          {
+            id: usuario.id,
+            nivel:
+              usuario.nivel
+          },
+          SECRET,
+          {
+            expiresIn: "30d"
+          }
+        );
+
+      res.json({
+
+        status: true,
+
+        token,
+
+        usuario: {
+
+          id: usuario.id,
+
+          nome:
+            usuario.nome,
+
+          login:
+            usuario.login,
+
+          nivel:
+            usuario.nivel
+
+        }
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro login"
+
+      });
+
+    }
 
   }
+);
 
-});
+// ================= CRIAR USUÁRIO =================
+router.post(
+  "/register",
+  async (req, res) => {
 
-// ================= USUÁRIO LOGADO =================
+    try {
 
-router.get("/me", auth, async (req, res) => {
+      const {
+        nome,
+        login,
+        senha,
+        nivel
+      } = req.body;
 
-  try {
+      const db = readDB();
 
-    const db = readDB();
+      const existe =
+        db.usuarios.find(
 
-    const usuario = db.usuarios.find(
-      u => u.id === req.user.id
-    );
+          u =>
+            u.login === login
 
-    if (!usuario) {
+        );
 
-      return res.status(404).json({
-        error: "Usuário não encontrado"
+      if (existe) {
+
+        return res.status(400).json({
+
+          status: false,
+
+          erro:
+            "Login já existe"
+
+        });
+
+      }
+
+      const hash =
+        await bcrypt.hash(
+          senha,
+          10
+        );
+
+      const novoUsuario = {
+
+        id:
+          Date.now().toString(),
+
+        nome,
+
+        login,
+
+        senha: hash,
+
+        nivel:
+          nivel || "leiturista",
+
+        ativo: true,
+
+        created_at:
+          new Date().toISOString(),
+
+        ultimo_login:
+          null
+
+      };
+
+      db.usuarios.push(
+        novoUsuario
+      );
+
+      saveDB(db);
+
+      res.json({
+
+        status: true,
+
+        usuario:
+          novoUsuario
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro cadastro"
+
       });
 
     }
 
-    res.json({
-      status: true,
-      usuario: {
-        id: usuario.id,
-        nome: usuario.nome,
-        login: usuario.login,
-        imei: usuario.imei,
-        nivel: usuario.nivel,
-        ativo: usuario.ativo,
-        criado_em: usuario.criado_em,
-        ultimo_login: usuario.ultimo_login
-      }
-    });
-
-  } catch (err) {
-
-    res.status(500).json({
-      error: err.message
-    });
-
   }
-
-});
+);
 
 // ================= LISTAR USUÁRIOS =================
+router.get(
+  "/usuarios",
+  (req, res) => {
 
-router.get("/usuarios", auth, async (req, res) => {
+    try {
 
-  try {
+      const db = readDB();
 
-    const db = readDB();
+      const usuarios =
+        db.usuarios.map(u => ({
 
-    const usuarios = db.usuarios.map(usuario => ({
-      id: usuario.id,
-      nome: usuario.nome,
-      login: usuario.login,
-      imei: usuario.imei,
-      nivel: usuario.nivel,
-      ativo: usuario.ativo,
-      criado_em: usuario.criado_em,
-      ultimo_login: usuario.ultimo_login
-    }));
+          id: u.id,
 
-    res.json({
-      status: true,
-      total: usuarios.length,
-      usuarios
-    });
+          nome: u.nome,
 
-  } catch (err) {
+          login: u.login,
 
-    res.status(500).json({
-      error: err.message
-    });
+          nivel: u.nivel,
 
-  }
+          ativo: u.ativo,
 
-});
+          ultimo_login:
+            u.ultimo_login
 
-// ================= BLOQUEAR USUÁRIO =================
+        }));
 
-router.put("/bloquear/:id", auth, async (req, res) => {
+      res.json(
+        usuarios
+      );
 
-  try {
+    } catch (err) {
 
-    const db = readDB();
+      console.log(err);
 
-    const usuario = db.usuarios.find(
-      u => u.id === req.params.id
-    );
+      res.status(500).json({
 
-    if (!usuario) {
+        status: false,
 
-      return res.status(404).json({
-        error: "Usuário não encontrado"
+        erro:
+          "Erro usuários"
+
       });
 
     }
 
-    usuario.ativo = false;
-
-    saveDB(db);
-
-    res.json({
-      status: true,
-      mensagem: "Usuário bloqueado"
-    });
-
-  } catch (err) {
-
-    res.status(500).json({
-      error: err.message
-    });
-
   }
+);
 
-});
+// ================= DESATIVAR =================
+router.patch(
+  "/usuarios/:id",
+  (req, res) => {
 
-// ================= DESBLOQUEAR USUÁRIO =================
+    try {
 
-router.put("/desbloquear/:id", auth, async (req, res) => {
+      const db = readDB();
 
-  try {
+      const usuario =
+        db.usuarios.find(
 
-    const db = readDB();
+          u =>
+            u.id ==
+            req.params.id
 
-    const usuario = db.usuarios.find(
-      u => u.id === req.params.id
-    );
+        );
 
-    if (!usuario) {
+      if (!usuario) {
 
-      return res.status(404).json({
-        error: "Usuário não encontrado"
+        return res.status(404).json({
+
+          status: false,
+
+          erro:
+            "Usuário não encontrado"
+
+        });
+
+      }
+
+      usuario.ativo =
+        !usuario.ativo;
+
+      saveDB(db);
+
+      res.json({
+
+        status: true,
+
+        usuario
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro atualização"
+
       });
 
     }
 
-    usuario.ativo = true;
-
-    saveDB(db);
-
-    res.json({
-      status: true,
-      mensagem: "Usuário desbloqueado"
-    });
-
-  } catch (err) {
-
-    res.status(500).json({
-      error: err.message
-    });
-
   }
-
-});
+);
 
 module.exports = router;

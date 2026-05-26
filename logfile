@@ -1,0 +1,9 @@
+2026-05-25 16:24:31.563 -03 [23741] LOG:  starting PostgreSQL 18.2 on aarch64-unknown-linux-android, compiled by Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349), 64-bit
+2026-05-25 16:24:31.564 -03 [23741] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-05-25 16:24:31.566 -03 [23741] LOG:  listening on Unix socket "/data/data/com.termux/files/usr/tmp/.s.PGSQL.5432"
+2026-05-25 16:24:31.595 -03 [23789] LOG:  database system was shut down at 2026-05-25 16:24:02 -03
+2026-05-25 16:24:31.628 -03 [23741] LOG:  database system is ready to accept connections
+2026-05-25 16:29:31.624 -03 [23784] LOG:  checkpoint starting: time
+2026-05-25 16:31:12.959 -03 [23784] LOG:  checkpoint complete: wrote 995 buffers (6.1%), wrote 3 SLRU buffers; 1 WAL file(s) added, 0 removed, 0 recycled; write=100.571 s, sync=0.338 s, total=101.338 s; sync files=333, longest=0.019 s, average=0.002 s; distance=4751 kB, estimate=4751 kB; lsn=0/1C07838, redo lsn=0/1C077A8
+2026-05-25 18:50:00.748 -03 [15988] LOG:  invalid length of startup packet
+2026-05-25 22:17:10.629 -03 [27353] LOG:  invalid length of startup packet

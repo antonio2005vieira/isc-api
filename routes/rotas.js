@@ -1,73 +1,274 @@
-const express = require('express');
+const express = require("express");
+
 const router = express.Router();
-const fs = require('fs');
-const path = require('path');
 
-const rotasPath = path.join(__dirname, '../database/rotas.json');
+const fs = require("fs");
 
-function carregarRotas() {
-    const data = fs.readFileSync(rotasPath);
-    return JSON.parse(data);
+const DB_PATH =
+  "./database/db.json";
+
+// ================= DB =================
+function readDB() {
+
+  return JSON.parse(
+    fs.readFileSync(DB_PATH)
+  );
+
 }
 
-function salvarRotas(rotas) {
-    fs.writeFileSync(rotasPath, JSON.stringify(rotas, null, 2));
+function saveDB(data) {
+
+  fs.writeFileSync(
+    DB_PATH,
+    JSON.stringify(data, null, 2)
+  );
+
 }
 
-// LISTAR ROTAS
-router.get('/', (req, res) => {
-    const rotas = carregarRotas();
-    res.json(rotas);
-});
+// ================= LISTAR ROTAS =================
+router.get("/", (req, res) => {
 
-// CRIAR ROTA
-router.post('/', (req, res) => {
+  try {
 
-    const rotas = carregarRotas();
-
-    const novaRota = {
-        id: Date.now(),
-        localidade: req.body.localidade,
-        setor: req.body.setor,
-        rota: req.body.rota,
-        leiturista: req.body.leiturista,
-        status: 'LIBERADO',
-        quantidade_imoveis: req.body.quantidade_imoveis || 0,
-        data_liberacao: new Date(),
-        data_finalizacao: null
-    };
-
-    rotas.push(novaRota);
-
-    salvarRotas(rotas);
+    const db = readDB();
 
     res.json({
-        mensagem: 'Rota criada com sucesso',
-        rota: novaRota
+
+      status: true,
+
+      total:
+        db.rotas.length,
+
+      rotas:
+        db.rotas
+
     });
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.status(500).json({
+
+      status: false,
+
+      erro:
+        "Erro rotas"
+
+    });
+
+  }
+
 });
 
-// FINALIZAR ROTA
-router.put('/:id/finalizar', (req, res) => {
+// ================= CRIAR ROTA =================
+router.post("/", (req, res) => {
 
-    const rotas = carregarRotas();
+  try {
 
-    const rota = rotas.find(r => r.id == req.params.id);
+    const {
+      codigo,
+      descricao,
+      leiturista
+    } = req.body;
 
-    if (!rota) {
-        return res.status(404).json({
-            erro: 'Rota não encontrada'
-        });
+    const db = readDB();
+
+    const existe =
+      db.rotas.find(
+
+        r =>
+          r.codigo === codigo
+
+      );
+
+    if (existe) {
+
+      return res.status(400).json({
+
+        status: false,
+
+        erro:
+          "Rota já existe"
+
+      });
+
     }
 
-    rota.status = 'FINALIZADO';
-    rota.data_finalizacao = new Date();
+    const novaRota = {
 
-    salvarRotas(rotas);
+      id:
+        Date.now(),
+
+      codigo,
+
+      descricao,
+
+      leiturista:
+        leiturista || null,
+
+      created_at:
+        new Date().toISOString()
+
+    };
+
+    db.rotas.push(
+      novaRota
+    );
+
+    saveDB(db);
 
     res.json({
-        mensagem: 'Rota finalizada'
+
+      status: true,
+
+      rota:
+        novaRota
+
     });
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.status(500).json({
+
+      status: false,
+
+      erro:
+        "Erro criar rota"
+
+    });
+
+  }
+
 });
+
+// ================= IMÓVEIS DA ROTA =================
+router.get(
+  "/:codigo/imoveis",
+  (req, res) => {
+
+    try {
+
+      const db = readDB();
+
+      const imoveis =
+        db.imoveis.filter(
+
+          i =>
+            i.rota ===
+            req.params.codigo
+
+        );
+
+      res.json({
+
+        status: true,
+
+        rota:
+          req.params.codigo,
+
+        total:
+          imoveis.length,
+
+        imoveis
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro imóveis rota"
+
+      });
+
+    }
+
+  }
+);
+
+// ================= PRODUTIVIDADE =================
+router.get(
+  "/:codigo/produtividade",
+  (req, res) => {
+
+    try {
+
+      const db = readDB();
+
+      const imoveis =
+        db.imoveis.filter(
+
+          i =>
+            i.rota ===
+            req.params.codigo
+
+        );
+
+      const visitados =
+        imoveis.filter(
+          i => i.visitado
+        ).length;
+
+      const pendentes =
+        imoveis.filter(
+          i => !i.visitado
+        ).length;
+
+      const produtividade =
+
+        imoveis.length > 0
+
+          ? (
+              (
+                visitados /
+                imoveis.length
+              ) * 100
+            ).toFixed(2)
+
+          : 0;
+
+      res.json({
+
+        status: true,
+
+        rota:
+          req.params.codigo,
+
+        total:
+          imoveis.length,
+
+        visitados,
+
+        pendentes,
+
+        produtividade
+
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        status: false,
+
+        erro:
+          "Erro produtividade"
+
+      });
+
+    }
+
+  }
+);
 
 module.exports = router;
