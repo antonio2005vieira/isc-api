@@ -1,0 +1,12 @@
+[
+  {
+    "id": "5c1f59ec-b8d2-4574-b5c7-8a9f3b1156ab",
+    "local_id": "teste_001",
+    "imovel_id": "123",
+    "leitura": 456,
+    "data": "2026-01-01",
+    "observacao": "teste",
+    "user_id": "1",
+    "recebido_em": "2026-05-29T15:26:53.263Z"
+  }
+]

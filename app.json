@@ -1,12 +1,32 @@
 {
   "expo": {
-    "extra": {
-      "eas": {
-        "projectId": "f9188b06-9e3f-4e44-aa5d-00791bb26352"
-      }
+    "name": "ISC SANEP",
+    "slug": "isc-sanep",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "plugins": [
       "expo-sqlite"
-    ]
+    ],
+    "android": {
+      "package": "com.isc.sanep"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eb4b162a-5974-497f-b7b8-50129db3cb71"
+      }
+    }
   }
 }

@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "versao": "2.1",
+    "sistema": "ISC SANEP",
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+
+  "usuarios": [
+    {
+      "id": "43c3f2d3-cec1-4187-97a0-68d25a3c5492",
+      "nome": "Antonio",
+      "login": "admin",
+      "senha": "$2b$10$anf6i19fCexuUw6hGVIJxel30OU0PihyJ8aY6s3BEv0kPj38bIw6i",
+      "imei": "123456789",
+      "nivel": "admin",
+      "ativo": 1,
+      "created_at": "2026-05-24T03:20:48.202Z",
+      "ultimo_login": "2026-05-24T03:27:50.757Z"
+    },
+    {
+      "id": "1779736396602",
+      "nome": "Joao",
+      "login": "joao",
+      "senha": "$2b$10$d.49/NU01OIOhEazZ8x7ROCFypSHINkjrhLALhYhfENVcM.CKRfDO",
+      "imei": null,
+      "nivel": "leiturista",
+      "ativo": 1,
+      "created_at": "2026-05-25T19:13:16.602Z",
+      "ultimo_login": null
+    }
+  ],
+
+  "imoveis": [
+    {
+      "id": 1779614448350,
+      "matricula": "1001",
+      "endereco": "Rua Central 123",
+      "hidrometro": "H001",
+      "rota": "R1",
+      "latitude": null,
+      "longitude": null,
+      "visitado": 0,
+      "sync_status": "pending",
+      "version": 1,
+      "created_at": "2026-05-24T09:20:48.350Z",
+      "updated_at": null
+    },
+    {
+      "id": 1779614459698,
+      "matricula": "1002",
+      "endereco": "Rua Norte 456",
+      "hidrometro": "H002",
+      "rota": "R1",
+      "latitude": null,
+      "longitude": null,
+      "visitado": 0,
+      "sync_status": "pending",
+      "version": 1,
+      "created_at": "2026-05-24T09:20:59.698Z",
+      "updated_at": null
+    }
+  ],
+
+  "leituras": [],
+
+  "rotas": [],
+
+  "fotos": [],
+
+  "sync_queue": [],
+
+  "sync_log": [],
+
+  "logs": []
+}

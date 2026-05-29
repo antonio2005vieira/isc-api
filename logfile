@@ -7,3 +7,12 @@
 2026-05-25 16:31:12.959 -03 [23784] LOG:  checkpoint complete: wrote 995 buffers (6.1%), wrote 3 SLRU buffers; 1 WAL file(s) added, 0 removed, 0 recycled; write=100.571 s, sync=0.338 s, total=101.338 s; sync files=333, longest=0.019 s, average=0.002 s; distance=4751 kB, estimate=4751 kB; lsn=0/1C07838, redo lsn=0/1C077A8
 2026-05-25 18:50:00.748 -03 [15988] LOG:  invalid length of startup packet
 2026-05-25 22:17:10.629 -03 [27353] LOG:  invalid length of startup packet
+2026-05-26 10:31:30.009 -03 [12274] LOG:  invalid length of startup packet
+2026-05-26 14:39:35.891 -03 [8600] LOG:  invalid length of startup packet
+2026-05-26 15:29:55.047 -03 [21553] LOG:  invalid length of startup packet
+2026-05-26 16:30:47.294 -03 [11570] LOG:  invalid length of startup packet
+2026-05-26 17:16:57.065 -03 [25202] LOG:  invalid length of startup packet
+2026-05-26 22:04:42.178 -03 [19221] LOG:  invalid length of startup packet
+2026-05-26 22:20:32.985 -03 [24008] LOG:  invalid length of startup packet
+2026-05-26 22:52:23.852 -03 [1285] LOG:  invalid length of startup packet
+2026-05-27 00:07:01.332 -03 [27441] LOG:  invalid length of startup packet

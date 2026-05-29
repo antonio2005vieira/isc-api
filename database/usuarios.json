@@ -1,0 +1,11 @@
+[
+  {
+    "id": "1",
+    "nome": "Administrador",
+    "login": "admin",
+    "senha": "$2b$10$tHEvUFRUDCPScxPigW.2rOAU68c4q9JLeN5v0hE1Tr5TDET5MkFBK",
+    "nivel": "admin",
+    "ativo": 1,
+    "criado_em": "2026-01-01T00:00:00.000Z"
+  }
+]

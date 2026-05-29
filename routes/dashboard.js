@@ -1,114 +1,87 @@
 const express = require("express");
-
 const router = express.Router();
-
 const fs = require("fs");
 
 const DB_PATH = "./database/db.json";
 
-// ================= DB =================
+// ================= READ DB =================
 function readDB() {
-
-  return JSON.parse(
-    fs.readFileSync(DB_PATH)
-  );
-
+  return JSON.parse(fs.readFileSync(DB_PATH));
 }
 
-// ================= DASHBOARD =================
+// ================= DASHBOARD REAL =================
 router.get("/", (req, res) => {
-
   try {
-
     const db = readDB();
 
-    const totalImoveis =
-      db.imoveis.length;
+    const imoveis = db.imoveis || [];
+    const leituras = db.leituras || [];
+    const usuarios = db.usuarios || [];
 
-    const totalLeituras =
-      db.leituras.length;
+    const totalImoveis = imoveis.length;
+    const totalLeituras = leituras.length;
+    const totalUsuarios = usuarios.length;
 
-    const totalUsuarios =
-      db.usuarios.length;
+    const visitados = imoveis.filter(i => i.visitado).length;
+    const pendentes = totalImoveis - visitados;
 
-    const visitados =
-      db.imoveis.filter(
-        i => i.visitado
-      ).length;
+    const sincronizados = leituras.filter(l => l.sync_status === "sent").length;
+    const offline = leituras.filter(l => l.sync_status !== "sent").length;
 
-    const pendentes =
-      db.imoveis.filter(
-        i => !i.visitado
-      ).length;
+    // ================= PRODUTIVIDADE =================
+    const produtividade = totalImoveis > 0
+      ? ((visitados / totalImoveis) * 100).toFixed(2)
+      : 0;
 
-    const sincronizados =
-      db.leituras.filter(
-        l => l.sync_status === "synced"
-      ).length;
+    // ================= POR USUÁRIO =================
+    const porUsuario = {};
 
-    const offline =
-      db.leituras.filter(
-        l => l.sync_status !== "synced"
-      ).length;
+    leituras.forEach(l => {
+      const user = l.usuario || "desconhecido";
+
+      if (!porUsuario[user]) {
+        porUsuario[user] = {
+          total: 0
+        };
+      }
+
+      porUsuario[user].total++;
+    });
 
     res.json({
-
       status: true,
 
       dashboard: {
+        sistema: "ISC SANEP",
 
-        sistema:
-          "ISC SANEP",
+        totais: {
+          imoveis: totalImoveis,
+          leituras: totalLeituras,
+          usuarios: totalUsuarios
+        },
 
-        total_imoveis:
-          totalImoveis,
+        operacao: {
+          visitados,
+          pendentes,
+          produtividade: `${produtividade}%`
+        },
 
-        total_leituras:
-          totalLeituras,
+        sync: {
+          sincronizados,
+          offline
+        },
 
-        total_usuarios:
-          totalUsuarios,
-
-        visitados,
-
-        pendentes,
-
-        sincronizados,
-
-        offline,
-
-        produtividade:
-
-          totalImoveis > 0
-
-            ? (
-                (
-                  visitados /
-                  totalImoveis
-                ) * 100
-              ).toFixed(2)
-
-            : 0
-
+        por_usuario: porUsuario
       }
-
     });
 
   } catch (err) {
-
     console.log(err);
-
     res.status(500).json({
-
       status: false,
-
-      erro:
-        "Erro dashboard"
-
+      erro: "Erro dashboard"
     });
-
   }
-
 });
 
 module.exports = router;
