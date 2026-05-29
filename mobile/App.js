@@ -1,101 +1,82 @@
 import React, { useEffect, useState } from "react";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NavigationContainer } from "@react-navigation/native";
 
-import Navigation from "./navigation";
+import AppNavigator from "./navigation";
+import { startAutoSync, startIntervalSync } from "./services/syncService";
+import { log } from "./utils/logger";
 
-import { initDB } from "./database/sqlite";
-
-import {
-  syncOnStart,
-  autoSync,
-  stopAutoSync
-} from "./services/syncService";
-
+// ==============================
+// 🚀 APP PRINCIPAL
+// ==============================
 export default function App() {
-
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ================= INIT =================
   useEffect(() => {
-    bootstrap();
+    initApp();
   }, []);
 
-  async function bootstrap() {
+  // ==============================
+  // 🔧 INICIALIZAÇÃO
+  // ==============================
+  const initApp = async () => {
     try {
+      log("APP", "🚀 Inicializando aplicação");
 
-      await initDB();
+      // 🔐 verificar token salvo
+      const token = await AsyncStorage.getItem("token");
 
-      const storedToken = await AsyncStorage.getItem("token");
-      const storedUser = await AsyncStorage.getItem("user");
-
-      if (storedToken && storedUser) {
-
-        const parsedUser = JSON.parse(storedUser);
-
-        setUser(parsedUser);
-        setToken(storedToken);
-
-        // 🔥 inicia sync automático
-        syncOnStart(storedToken);
-        autoSync(storedToken);
+      if (token) {
+        log("APP", "🔐 Token encontrado");
+      } else {
+        log("APP", "⚠️ Usuário não logado");
       }
 
+      // 🌐 iniciar monitor de internet
+      startAutoSync();
+
+      // ⏱ sync a cada 60s
+      startIntervalSync(60000);
+
+      log("APP", "✅ Serviços iniciados");
     } catch (err) {
-      console.log("BOOTSTRAP ERROR:", err);
+      log("ERROR", "Erro ao iniciar app", {
+        erro: err?.message,
+      });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  // ================= LOGIN =================
-  async function handleLogin(data) {
-    try {
-
-      setUser(data.user);
-      setToken(data.token);
-
-      await AsyncStorage.setItem("token", data.token);
-      await AsyncStorage.setItem("user", JSON.stringify(data.user));
-
-      // 🔥 ativa sync
-      syncOnStart(data.token);
-      autoSync(data.token);
-
-    } catch (err) {
-      console.log("LOGIN ERROR:", err);
-    }
-  }
-
-  // ================= LOGOUT =================
-  async function handleLogout() {
-    try {
-
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("user");
-
-      stopAutoSync();
-
-      setUser(null);
-      setToken(null);
-
-    } catch (err) {
-      console.log("LOGOUT ERROR:", err);
-    }
-  }
-
-  // ================= LOADING =================
+  // ==============================
+  // ⏳ LOADING INICIAL
+  // ==============================
   if (loading) {
-    return null; // pode trocar depois por SplashScreen
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
-  // ================= APP FLOW =================
+  // ==============================
+  // 📱 APP
+  // ==============================
   return (
-    <Navigation
-      user={user}
-      onLogin={handleLogin}
-      onLogout={handleLogout}
-    />
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
   );
 }
+
+// ==============================
+// 🎨 ESTILOS
+// ==============================
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

@@ -1,15 +1,15 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// 🔧 CONFIGURÁVEL (trocar fácil depois)
+// 🌐 URL DA API (Render)
 const BASE_URL = "https://isc-api.onrender.com";
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 15000,
+  timeout: 20000, // ⏱ maior por causa do Render (cold start)
 });
 
-// ================= INTERCEPTOR REQUEST =================
+// ================= REQUEST =================
 api.interceptors.request.use(
   async (config) => {
     try {
@@ -18,6 +18,8 @@ api.interceptors.request.use(
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+
+      config.headers["Content-Type"] = "application/json";
     } catch (err) {
       console.log("Erro ao pegar token:", err);
     }
@@ -27,29 +29,38 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ================= INTERCEPTOR RESPONSE =================
+// ================= RESPONSE =================
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const status = error?.response?.status;
 
-    // 🔐 Token expirado ou inválido
+    // 🔐 Token inválido ou expirado
     if (status === 401) {
       console.log("Token inválido ou expirado");
 
       await AsyncStorage.removeItem("token");
 
-      // ⚠️ Aqui você pode forçar logout depois
+      // 👉 opcional: redirecionar pro login
     }
 
-    // 🌐 Sem internet / timeout
+    // 🌐 Render dormindo ou sem internet
     if (error.message === "Network Error") {
-      console.log("Sem conexão com servidor");
+      console.log("Servidor indisponível ou sem internet");
     }
 
+    // ⏱ Timeout (Render cold start)
     if (error.code === "ECONNABORTED") {
-      console.log("Timeout da requisição");
+      console.log("Servidor demorou para responder (cold start)");
     }
+
+    // 🔥 DEBUG MELHORADO
+    console.log("Erro API:", {
+      url: error.config?.url,
+      method: error.config?.method,
+      status,
+      data: error.response?.data,
+    });
 
     return Promise.reject(error);
   }

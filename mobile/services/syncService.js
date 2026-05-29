@@ -1,94 +1,151 @@
-import axios from "axios";
+import NetInfo from "@react-native-community/netinfo";
+import api from "./api";
+import db from "../database/sqlite";
+import { log } from "../utils/logger";
 
-import {
-  listarLeiturasPendentes,
-  atualizarStatusLeitura
-} from "../database/sqlite";
-
-import { logError } from "../utils/errorHandler";
-
-// ================= CONFIG =================
-const API_URL = "http://SEU_SERVIDOR/api";
-
-// trava anti execução dupla
 let isSyncRunning = false;
 
-// ================= SYNC PRINCIPAL =================
-export async function sincronizarLeituras() {
-
-  if (isSyncRunning) return;
+// ==============================
+// 🔄 SYNC PRINCIPAL
+// ==============================
+export async function syncLeituras() {
+  if (isSyncRunning) {
+    log("SYNC", "Sync já em execução, ignorando...");
+    return;
+  }
 
   isSyncRunning = true;
 
+  log("SYNC", "🚀 Iniciando sincronização...");
+
   try {
+    const net = await NetInfo.fetch();
 
-    const leituras = await listarLeiturasPendentes();
-
-    if (!leituras || leituras.length === 0) {
-      console.log("📭 Nenhuma leitura para sincronizar");
-      return;
+    if (!net.isConnected) {
+      log("SYNC", "❌ Sem internet");
+      isSyncRunning = false;
+      return { success: false, offline: true };
     }
 
-    console.log(`🔄 Sync iniciando: ${leituras.length} leituras`);
+    const leituras = await db.getAllAsync(
+      "SELECT * FROM leituras WHERE sync = 0"
+    );
+
+    if (!leituras.length) {
+      log("SYNC", "✅ Nenhuma leitura pendente");
+      isSyncRunning = false;
+      return { success: true, empty: true };
+    }
+
+    log("SYNC", `📦 ${leituras.length} pendentes`);
+
+    let enviados = 0;
+    let erros = 0;
 
     for (const leitura of leituras) {
-
       try {
+        log("SYNC", "📤 Enviando", { id: leitura.id });
 
-        await axios.post(`${API_URL}/leituras`, leitura, {
-          timeout: 10000
+        const response = await api.post("/leituras", {
+          local_id: leitura.id,
+          imovel_id: leitura.imovel_id,
+          leitura: leitura.leitura,
+          data: leitura.data,
+          observacao: leitura.observacao,
         });
 
-        await atualizarStatusLeitura(leitura.id, "sent");
+        // ✅ sucesso real OU já existe (backend protegido)
+        if (
+          response?.data?.success ||
+          response?.data?.message === "Leitura já sincronizada"
+        ) {
+          await db.runAsync(
+            "UPDATE leituras SET sync = 1 WHERE id = ?",
+            [leitura.id]
+          );
 
-        console.log("✔ Sync OK:", leitura.id);
+          enviados++;
 
+          log("SYNC", "✅ Sincronizado", { id: leitura.id });
+        } else {
+          erros++;
+
+          log("ERROR", "⚠️ Falha lógica", {
+            id: leitura.id,
+            response: response?.data,
+          });
+        }
       } catch (err) {
+        erros++;
 
-        console.log("❌ Sync FAIL:", leitura.id);
+        log("ERROR", "❌ Erro envio", {
+          id: leitura.id,
+          erro: err?.message,
+        });
 
-        logError("SyncService - leitura", err, leitura);
-
-        await atualizarStatusLeitura(leitura.id, "error");
+        // ⚠️ não marca como sync (continua pendente)
       }
     }
 
-    console.log("✅ Sync finalizado");
+    const resultado = {
+      success: true,
+      enviados,
+      erros,
+      total: leituras.length,
+    };
 
-  } catch (err) {
-
-    logError("SyncService - geral", err);
-
-  } finally {
+    log("SYNC", "📊 Resultado final", resultado);
 
     isSyncRunning = false;
+    return resultado;
+  } catch (err) {
+    log("ERROR", "🔥 Erro geral no sync", {
+      erro: err?.message,
+    });
+
+    isSyncRunning = false;
+
+    return {
+      success: false,
+      error: true,
+    };
   }
 }
 
-// ================= SYNC AUTO =================
-export async function syncAuto() {
+// ==============================
+// 🌐 AUTO SYNC (internet voltou)
+// ==============================
+export function startAutoSync() {
+  log("SYNC", "🌐 Monitorando conexão...");
 
-  try {
+  const unsubscribe = NetInfo.addEventListener((state) => {
+    if (state.isConnected) {
+      log("SYNC", "📶 Internet detectada → iniciar sync");
+      syncLeituras();
+    }
+  });
 
-    await sincronizarLeituras();
-
-  } catch (err) {
-
-    logError("SyncService - auto", err);
-  }
+  return unsubscribe;
 }
 
-// ================= SYNC ON START =================
-export async function syncOnStart() {
+// ==============================
+// 🔁 SYNC MANUAL (botão)
+// ==============================
+export async function syncManual() {
+  log("SYNC", "👆 Sync manual acionado");
 
-  try {
+  return await syncLeituras();
+}
 
-    setTimeout(() => {
-      sincronizarLeituras();
-    }, 3000);
+// ==============================
+// ⏱ SYNC AUTOMÁTICO POR TEMPO
+// ==============================
+export function startIntervalSync(interval = 60000) {
+  log("SYNC", `⏱ Sync automático a cada ${interval / 1000}s`);
 
-  } catch (err) {
+  const timer = setInterval(() => {
+    syncLeituras();
+  }, interval);
 
-    logError("SyncService - start", err);
-  }
+  return () => clearInterval(timer);
 }

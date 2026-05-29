@@ -1,55 +1,25 @@
 require("dotenv").config();
 
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
+const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
+const pool = require("./database/db");
 
 const app = express();
+
 app.use(express.json());
 app.use(cors());
 
 // ================= CONFIG =================
 const PORT = process.env.PORT || 3000;
-const SECRET = process.env.JWT_SECRET || "isc_secret_key";
+const SECRET = process.env.SECRET;
 
-// ================= PATHS =================
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "database");
-
-const USERS_FILE = path.join(DATA_DIR, "usuarios.json");
-const DEVICES_FILE = path.join(DATA_DIR, "devices.json");
-const IMOVEIS_FILE = path.join(DATA_DIR, "imoveis.json");
-const LEITURAS_FILE = path.join(DATA_DIR, "leituras.json");
-
-// ================= INIT FILES =================
-function ensureFile(file) {
-  if (!fs.existsSync(file)) {
-    fs.writeFileSync(file, "[]");
-  }
-}
-
-[USERS_FILE, DEVICES_FILE, IMOVEIS_FILE, LEITURAS_FILE].forEach(ensureFile);
-
-// ================= HELPERS =================
-function readJSON(file) {
-  try {
-    return JSON.parse(fs.readFileSync(file, "utf-8"));
-  } catch (err) {
-    console.log("Erro ao ler JSON:", err);
-    return [];
-  }
-}
-
-function writeJSON(file, data) {
-  try {
-    fs.writeFileSync(file, JSON.stringify(data, null, 2));
-  } catch (err) {
-    console.log("Erro ao escrever JSON:", err);
-  }
-}
+// ================= TESTE DB =================
+pool.query("SELECT NOW()")
+  .then(() => console.log("🟢 PostgreSQL conectado"))
+  .catch((err) => console.log("🔴 Erro DB:", err));
 
 // ================= AUTH =================
 function auth(req, res, next) {
@@ -63,7 +33,7 @@ function auth(req, res, next) {
     const decoded = jwt.verify(token, SECRET);
     req.user = decoded;
     next();
-  } catch (err) {
+  } catch {
     return res.status(401).json({ erro: "Token inválido" });
   }
 }
@@ -73,23 +43,17 @@ app.post("/auth/login", async (req, res) => {
   try {
     const { login, senha } = req.body;
 
-    if (!login || !senha) {
-      return res.status(400).json({
-        status: false,
-        erro: "Login e senha obrigatórios"
-      });
-    }
-
-    const usuarios = readJSON(USERS_FILE);
-
-    const user = usuarios.find(
-      (u) => u.login === login && u.ativo === 1
+    const result = await pool.query(
+      "SELECT * FROM usuarios WHERE login = $1 AND ativo = 1",
+      [login]
     );
+
+    const user = result.rows[0];
 
     if (!user) {
       return res.status(401).json({
         status: false,
-        erro: "Usuário não encontrado"
+        erro: "Usuário não encontrado",
       });
     }
 
@@ -98,7 +62,7 @@ app.post("/auth/login", async (req, res) => {
     if (!senhaValida) {
       return res.status(401).json({
         status: false,
-        erro: "Senha inválida"
+        erro: "Senha inválida",
       });
     }
 
@@ -106,7 +70,7 @@ app.post("/auth/login", async (req, res) => {
       {
         id: user.id,
         nome: user.nome,
-        nivel: user.nivel
+        nivel: user.nivel,
       },
       SECRET,
       { expiresIn: "7d" }
@@ -117,159 +81,117 @@ app.post("/auth/login", async (req, res) => {
       user: {
         id: user.id,
         nome: user.nome,
-        nivel: user.nivel
-      }
+        nivel: user.nivel,
+      },
     });
   } catch (err) {
     console.log("Erro login:", err);
-    res.status(500).json({
-      status: false,
-      erro: "Erro interno no login"
-    });
+    res.status(500).json({ erro: "Erro interno no login" });
   }
-});
-
-// ================= DEVICE =================
-app.post("/device/validate", (req, res) => {
-  const { imei } = req.body;
-
-  if (!imei) {
-    return res.status(400).json({ autorizado: false });
-  }
-
-  const devices = readJSON(DEVICES_FILE);
-  const device = devices.find((d) => d.imei === imei);
-
-  if (!device || device.ativo !== true) {
-    return res.status(403).json({ autorizado: false });
-  }
-
-  res.json({ autorizado: true, device });
-});
-
-app.post("/device/register", (req, res) => {
-  const { imei } = req.body;
-
-  if (!imei) {
-    return res.status(400).json({ success: false });
-  }
-
-  const devices = readJSON(DEVICES_FILE);
-  const exists = devices.find((d) => d.imei === imei);
-
-  if (exists) {
-    return res.json({
-      success: true,
-      message: "Já cadastrado"
-    });
-  }
-
-  const novo = {
-    id: uuidv4(),
-    imei,
-    ativo: false,
-    criado_em: new Date()
-  };
-
-  devices.push(novo);
-  writeJSON(DEVICES_FILE, devices);
-
-  res.json({
-    success: true,
-    device: novo
-  });
 });
 
 // ================= IMOVEIS =================
-app.get("/imoveis", auth, (req, res) => {
-  const imoveis = readJSON(IMOVEIS_FILE);
-  res.json(imoveis);
+app.get("/imoveis", auth, async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM imoveis");
+    res.json(result.rows);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ erro: "Erro ao buscar imóveis" });
+  }
 });
 
 // ================= LEITURAS =================
-app.post("/leituras", auth, (req, res) => {
+app.post("/leituras", auth, async (req, res) => {
   try {
-    const leitura = req.body;
+    const { local_id, imovel_id, leitura, data, observacao } = req.body;
 
-    if (!leitura || !leitura.imovel_id || !leitura.leitura) {
+    if (!local_id) {
       return res.status(400).json({
         success: false,
-        erro: "Dados da leitura inválidos"
+        erro: "local_id obrigatório",
       });
     }
 
-    const leituras = readJSON(LEITURAS_FILE);
-
-    // 🔥 IDempotência (não duplicar)
-    const exists = leituras.find(
-      (l) => l.local_id === leitura.local_id
+    // evitar duplicação (offline sync)
+    const exists = await pool.query(
+      "SELECT id FROM leituras WHERE local_id = $1",
+      [local_id]
     );
 
-    if (exists) {
+    if (exists.rows.length > 0) {
       return res.json({
         success: true,
-        message: "Leitura já sincronizada"
+        message: "Leitura já sincronizada",
       });
     }
 
-    const novaLeitura = {
-      id: uuidv4(),
-      ...leitura,
-      recebido_em: new Date(),
-      usuario_id: req.user.id
-    };
+    const id = uuidv4();
 
-    leituras.push(novaLeitura);
-    writeJSON(LEITURAS_FILE, leituras);
+    await pool.query(
+      `INSERT INTO leituras 
+       (id, local_id, imovel_id, leitura, data, observacao, enviado_em)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
+      [id, local_id, imovel_id, leitura, data, observacao]
+    );
 
     res.json({
       success: true,
-      id: novaLeitura.id
+      id,
     });
   } catch (err) {
-    console.log("Erro salvar leitura:", err);
+    console.log("Erro leitura:", err);
     res.status(500).json({
       success: false,
-      erro: "Erro ao salvar leitura"
+      erro: "Erro ao salvar leitura",
     });
   }
 });
 
 // ================= DASHBOARD =================
-app.get("/dashboard", auth, (req, res) => {
-  const imoveis = readJSON(IMOVEIS_FILE);
-  const leituras = readJSON(LEITURAS_FILE);
+app.get("/dashboard", auth, async (req, res) => {
+  try {
+    const imoveis = await pool.query("SELECT COUNT(*) FROM imoveis");
+    const leituras = await pool.query("SELECT COUNT(*) FROM leituras");
+    const visitados = await pool.query(
+      "SELECT COUNT(*) FROM imoveis WHERE visitado = true"
+    );
 
-  const total_imoveis = imoveis.length;
-  const total_leituras = leituras.length;
-  const visitados = imoveis.filter((i) => i.visitado).length;
-  const pendentes = total_imoveis - visitados;
+    const total_imoveis = parseInt(imoveis.rows[0].count);
+    const total_leituras = parseInt(leituras.rows[0].count);
+    const total_visitados = parseInt(visitados.rows[0].count);
 
-  const produtividade = total_imoveis
-    ? ((visitados / total_imoveis) * 100).toFixed(2)
-    : 0;
+    const pendentes = total_imoveis - total_visitados;
 
-  res.json({
-    dashboard: {
-      total_imoveis,
-      total_leituras,
-      visitados,
-      pendentes,
-      produtividade
-    }
-  });
+    const produtividade = total_imoveis
+      ? ((total_visitados / total_imoveis) * 100).toFixed(2)
+      : 0;
+
+    res.json({
+      dashboard: {
+        total_imoveis,
+        total_leituras,
+        visitados: total_visitados,
+        pendentes,
+        produtividade,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ erro: "Erro no dashboard" });
+  }
 });
 
 // ================= STATUS =================
 app.get("/", (req, res) => {
   res.json({
     status: "ok",
-    ambiente: process.env.NODE_ENV || "local",
-    uptime: process.uptime()
+    ambiente: process.env.NODE_ENV || "development",
+    uptime: process.uptime(),
   });
 });
 
 // ================= START =================
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

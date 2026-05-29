@@ -1,90 +1,101 @@
-import React from "react";
-
-import { NavigationContainer } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-// ================= SCREENS =================
+// ==============================
+// 📱 SCREENS
+// ==============================
 import LoginScreen from "../screens/LoginScreen";
 import MenuScreen from "../screens/MenuScreen";
 import ImoveisScreen from "../screens/ImoveisScreen";
 import LeituraScreen from "../screens/LeituraScreen";
-import SyncScreen from "../screens/SyncScreen";
+import LogsScreen from "../screens/LogsScreen";
 
-// ================= STACK =================
+// ==============================
 const Stack = createNativeStackNavigator();
 
-// ================= NAVIGATION =================
-export default function Navigation({
-  user,
-  onLogin,
-  onLogout
-}) {
+// ==============================
+// 🚀 NAVIGATION
+// ==============================
+export default function AppNavigator() {
+  const [loading, setLoading] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
 
-  return (
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
-    <NavigationContainer>
+  // ==============================
+  // 🔐 VERIFICAR LOGIN
+  // ==============================
+  const checkAuth = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
 
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false
+      if (token) {
+        setIsAuth(true);
+      } else {
+        setIsAuth(false);
+      }
+    } catch (err) {
+      setIsAuth(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ==============================
+  // ⏳ LOADING
+  // ==============================
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
-        {/* ================= LOGIN FLOW ================= */}
-        {!user ? (
-
-          <Stack.Screen name="Login">
-
+  // ==============================
+  // 🚀 ROTAS
+  // ==============================
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!isAuth ? (
+        // 🔐 NÃO LOGADO
+        <Stack.Screen name="Login">
+          {(props) => (
+            <LoginScreen {...props} onLogin={() => setIsAuth(true)} />
+          )}
+        </Stack.Screen>
+      ) : (
+        // 📱 LOGADO
+        <>
+          <Stack.Screen name="Menu">
             {(props) => (
-              <LoginScreen
+              <MenuScreen
                 {...props}
-                onLoginSuccess={onLogin}
+                onLogout={async () => {
+                  await AsyncStorage.removeItem("token");
+                  setIsAuth(false);
+                }}
               />
             )}
-
           </Stack.Screen>
 
-        ) : (
+          <Stack.Screen name="Imoveis" component={ImoveisScreen} />
 
-          <>
+          <Stack.Screen name="Leitura" component={LeituraScreen} />
 
-            {/* ================= MENU ================= */}
-            <Stack.Screen name="Menu">
-
-              {(props) => (
-                <MenuScreen
-                  {...props}
-                  onLogout={onLogout}
-                />
-              )}
-
-            </Stack.Screen>
-
-            {/* ================= IMÓVEIS ================= */}
-            <Stack.Screen
-              name="Imoveis"
-              component={ImoveisScreen}
-            />
-
-            {/* ================= LEITURA ================= */}
-            <Stack.Screen
-              name="Leitura"
-              component={LeituraScreen}
-            />
-
-            {/* ================= SYNC PANEL ================= */}
-            <Stack.Screen
-              name="Sync"
-              component={SyncScreen}
-            />
-
-          </>
-
-        )}
-
-      </Stack.Navigator>
-
-    </NavigationContainer>
-
+          <Stack.Screen name="Logs" component={LogsScreen} />
+        </>
+      )}
+    </Stack.Navigator>
   );
 }
