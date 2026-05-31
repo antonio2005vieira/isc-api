@@ -5,23 +5,52 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
-const pool = require("./database/db");
+const { Pool } = require("pg");
 
 const app = express();
 
+/**
+ * ==============================
+ * 🌐 MIDDLEWARE
+ * ==============================
+ */
 app.use(express.json());
 app.use(cors());
 
-// ================= CONFIG =================
-const PORT = process.env.PORT || 3000;
-const SECRET = process.env.SECRET;
+/**
+ * ==============================
+ * 🔥 DATABASE (CORRIGIDO)
+ * ==============================
+ */
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }, // necessário no Render
+});
 
-// ================= TESTE DB =================
-pool.query("SELECT NOW()")
+pool.connect()
   .then(() => console.log("🟢 PostgreSQL conectado"))
   .catch((err) => console.log("🔴 Erro DB:", err));
 
-// ================= AUTH =================
+/**
+ * ==============================
+ * 🔐 CONFIG
+ * ==============================
+ */
+const PORT = process.env.PORT || 3000;
+const SECRET = process.env.SECRET;
+
+/**
+ * ==============================
+ * 🧪 DEBUG (IMPORTANTE)
+ * ==============================
+ */
+console.log("DATABASE_URL LOADED:", !!process.env.DATABASE_URL);
+
+/**
+ * ==============================
+ * 🔐 AUTH MIDDLEWARE
+ * ==============================
+ */
 function auth(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -38,10 +67,14 @@ function auth(req, res, next) {
   }
 }
 
-// ================= LOGIN =================
+/**
+ * ==============================
+ * 🔑 LOGIN
+ * ==============================
+ */
 app.post("/auth/login", async (req, res) => {
   try {
-    const { login, senha } = req.body;
+    const { login, senha, imei } = req.body;
 
     const result = await pool.query(
       "SELECT * FROM usuarios WHERE login = $1 AND ativo = 1",
@@ -51,32 +84,34 @@ app.post("/auth/login", async (req, res) => {
     const user = result.rows[0];
 
     if (!user) {
-      return res.status(401).json({
-        status: false,
-        erro: "Usuário não encontrado",
-      });
+      return res.status(401).json({ erro: "Usuário não encontrado" });
     }
 
     const senhaValida = await bcrypt.compare(senha, user.senha);
 
     if (!senhaValida) {
-      return res.status(401).json({
-        status: false,
-        erro: "Senha inválida",
-      });
+      return res.status(401).json({ erro: "Senha inválida" });
+    }
+
+    // IMEI
+    if (user.imei && user.imei !== imei) {
+      return res.status(403).json({ erro: "Dispositivo não autorizado" });
+    }
+
+    if (!user.imei && imei) {
+      await pool.query(
+        "UPDATE usuarios SET imei = $1 WHERE id = $2",
+        [imei, user.id]
+      );
     }
 
     const token = jwt.sign(
-      {
-        id: user.id,
-        nome: user.nome,
-        nivel: user.nivel,
-      },
+      { id: user.id, nome: user.nome, nivel: user.nivel },
       SECRET,
       { expiresIn: "7d" }
     );
 
-    res.json({
+    return res.json({
       token,
       user: {
         id: user.id,
@@ -84,114 +119,89 @@ app.post("/auth/login", async (req, res) => {
         nivel: user.nivel,
       },
     });
+
   } catch (err) {
     console.log("Erro login:", err);
-    res.status(500).json({ erro: "Erro interno no login" });
+    return res.status(500).json({
+      erro: "Erro interno no login",
+      detalhe: err.message,
+    });
   }
 });
 
-// ================= IMOVEIS =================
+/**
+ * ==============================
+ * 🏠 IMÓVEIS (CORRIGIDO + DEBUG)
+ * ==============================
+ */
 app.get("/imoveis", auth, async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM imoveis");
-    res.json(result.rows);
+    console.log("GET /imoveis");
+
+    const result = await pool.query(
+      "SELECT * FROM imoveis ORDER BY codigo"
+    );
+
+    return res.json(result.rows);
+
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ erro: "Erro ao buscar imóveis" });
+    console.log("Erro imoveis:", err);
+    return res.status(500).json({ erro: "Erro ao buscar imóveis" });
   }
 });
 
-// ================= LEITURAS =================
+/**
+ * ==============================
+ * 📊 LEITURAS
+ * ==============================
+ */
 app.post("/leituras", auth, async (req, res) => {
   try {
     const { local_id, imovel_id, leitura, data, observacao } = req.body;
 
-    if (!local_id) {
-      return res.status(400).json({
-        success: false,
-        erro: "local_id obrigatório",
-      });
-    }
-
-    // evitar duplicação (offline sync)
     const exists = await pool.query(
       "SELECT id FROM leituras WHERE local_id = $1",
       [local_id]
     );
 
     if (exists.rows.length > 0) {
-      return res.json({
-        success: true,
-        message: "Leitura já sincronizada",
-      });
+      return res.json({ success: true, message: "Já sincronizado" });
     }
 
     const id = uuidv4();
 
     await pool.query(
-      `INSERT INTO leituras 
+      `INSERT INTO leituras
        (id, local_id, imovel_id, leitura, data, observacao, enviado_em)
-       VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
+       VALUES ($1,$2,$3,$4,$5,$6,NOW())`,
       [id, local_id, imovel_id, leitura, data, observacao]
     );
 
-    res.json({
-      success: true,
-      id,
-    });
+    return res.json({ success: true, id });
+
   } catch (err) {
-    console.log("Erro leitura:", err);
-    res.status(500).json({
-      success: false,
-      erro: "Erro ao salvar leitura",
-    });
+    console.log("Erro leituras:", err);
+    return res.status(500).json({ erro: "Erro ao salvar leitura" });
   }
 });
 
-// ================= DASHBOARD =================
-app.get("/dashboard", auth, async (req, res) => {
-  try {
-    const imoveis = await pool.query("SELECT COUNT(*) FROM imoveis");
-    const leituras = await pool.query("SELECT COUNT(*) FROM leituras");
-    const visitados = await pool.query(
-      "SELECT COUNT(*) FROM imoveis WHERE visitado = true"
-    );
-
-    const total_imoveis = parseInt(imoveis.rows[0].count);
-    const total_leituras = parseInt(leituras.rows[0].count);
-    const total_visitados = parseInt(visitados.rows[0].count);
-
-    const pendentes = total_imoveis - total_visitados;
-
-    const produtividade = total_imoveis
-      ? ((total_visitados / total_imoveis) * 100).toFixed(2)
-      : 0;
-
-    res.json({
-      dashboard: {
-        total_imoveis,
-        total_leituras,
-        visitados: total_visitados,
-        pendentes,
-        produtividade,
-      },
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ erro: "Erro no dashboard" });
-  }
-});
-
-// ================= STATUS =================
+/**
+ * ==============================
+ * 🧪 HEALTH CHECK
+ * ==============================
+ */
 app.get("/", (req, res) => {
   res.json({
     status: "ok",
-    ambiente: process.env.NODE_ENV || "development",
     uptime: process.uptime(),
   });
 });
 
-// ================= START =================
-app.listen(PORT, () => {
+/**
+ * ==============================
+ * 🚀 START SERVER
+ * ==============================
+ */
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

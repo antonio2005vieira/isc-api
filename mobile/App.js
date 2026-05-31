@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 
 import AppNavigator from "./navigation";
+import { startSyncEngine } from "./services/syncEngine";
 import { startAutoSync, startIntervalSync } from "./services/syncService";
 import { log } from "./utils/logger";
 
@@ -18,28 +19,29 @@ export default function App() {
   }, []);
 
   // ==============================
-  // 🔧 INICIALIZAÇÃO
+  // 🔧 INICIALIZAÇÃO DO APP
   // ==============================
   const initApp = async () => {
     try {
-      log("APP", "🚀 Inicializando aplicação");
+      log("APP", "🚀 Inicializando sistema ISC");
 
-      // 🔐 verificar token salvo
+      // 🔐 VERIFICAR LOGIN
       const token = await AsyncStorage.getItem("token");
 
       if (token) {
-        log("APP", "🔐 Token encontrado");
+        log("APP", "🔐 Usuário autenticado");
       } else {
-        log("APP", "⚠️ Usuário não logado");
+        log("APP", "⚠️ Usuário não autenticado");
       }
 
-      // 🌐 iniciar monitor de internet
+      // 🌐 SYNC LEGADO (mantido)
       startAutoSync();
-
-      // ⏱ sync a cada 60s
       startIntervalSync(60000);
 
-      log("APP", "✅ Serviços iniciados");
+      // 🔁 NOVO MOTOR OFFLINE-FIRST (CRÍTICO)
+      startSyncEngine();
+
+      log("APP", "✅ Serviços inicializados com sucesso");
     } catch (err) {
       log("ERROR", "Erro ao iniciar app", {
         erro: err?.message,

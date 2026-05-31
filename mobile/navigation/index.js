@@ -11,52 +11,43 @@ import MenuScreen from "../screens/MenuScreen";
 import ImoveisScreen from "../screens/ImoveisScreen";
 import LeituraScreen from "../screens/LeituraScreen";
 import LogsScreen from "../screens/LogsScreen";
+import ImpressoraScreen from "../screens/impressora";
 
-// ==============================
 const Stack = createNativeStackNavigator();
 
 // ==============================
-// 🚀 NAVIGATION
+// 🚀 NAVIGATION PRINCIPAL
 // ==============================
 export default function AppNavigator() {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
   // ==============================
-  // 🔐 VERIFICAR LOGIN
+  // 🔐 VERIFICAR AUTENTICAÇÃO
   // ==============================
   const checkAuth = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      if (token) {
-        setIsAuth(true);
-      } else {
-        setIsAuth(false);
-      }
+      setIsAuth(Boolean(token));
     } catch (err) {
+      console.log("Auth error:", err);
       setIsAuth(false);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
   // ==============================
-  // ⏳ LOADING
+  // ⏳ LOADING INICIAL
   // ==============================
   if (loading) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -68,14 +59,17 @@ export default function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!isAuth ? (
-        // 🔐 NÃO LOGADO
+        // 🔐 LOGIN FLOW
         <Stack.Screen name="Login">
           {(props) => (
-            <LoginScreen {...props} onLogin={() => setIsAuth(true)} />
+            <LoginScreen
+              {...props}
+              onLogin={() => setIsAuth(true)}
+            />
           )}
         </Stack.Screen>
       ) : (
-        // 📱 LOGADO
+        // 📱 APP PRINCIPAL
         <>
           <Stack.Screen name="Menu">
             {(props) => (
@@ -94,6 +88,11 @@ export default function AppNavigator() {
           <Stack.Screen name="Leitura" component={LeituraScreen} />
 
           <Stack.Screen name="Logs" component={LogsScreen} />
+
+          <Stack.Screen
+            name="Impressora"
+            component={ImpressoraScreen}
+          />
         </>
       )}
     </Stack.Navigator>
